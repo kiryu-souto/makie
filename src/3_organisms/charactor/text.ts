@@ -1,3 +1,5 @@
+import p5 from 'p5'
+
 class Text {
     x: number
     y: number
@@ -9,4 +11,10 @@ class Text {
     }
 }
 
-export{Text}
+function text_draw (p: p5, text_lst: Text[]) {
+    for (let text of text_lst) {
+      p.text(text.content, text.x, text.y)
+    }
+  }
+
+export{Text, text_draw}
