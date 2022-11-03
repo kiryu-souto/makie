@@ -1,7 +1,8 @@
 import './style.css'
 import {horizontal_movement} from './1_atoms/math/game'
 // import {Substance} from './3_organisms/charactor/charactor'
-import * as text from './3_organisms/charactor/text'
+import * as text from './1_atoms/objects/text'
+import * as origin_draw from './2_molecules/draws/object_draw'
 import p5 from 'p5'
 
 let x: number = 50
@@ -26,9 +27,8 @@ const sketch = (p: p5) => {
 
     p.fill(0)
     x = x + horizontal_movement(10, 1)
-    text.text_draw(p, test_text_lst)
-   
-
+    // text.text_draw(p, test_text_lst)
+    origin_draw.origin_draw(p, test_text_lst)
   }
   // p.mousePressed = () => {
   //   p.fill(0)
