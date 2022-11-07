@@ -1,5 +1,5 @@
 import './style.css'
-import {horizontal_movement} from './1_atoms/math/game'
+import {horizontal_movement, vertical_motion} from './1_atoms/math/game'
 // import {Substance} from './3_organisms/charactor/charactor'
 import * as text from './1_atoms/objects/text'
 import * as origin_draw from './2_molecules/draws/object_draw'
@@ -22,6 +22,9 @@ const sketch = (p: p5) => {
         text.x = text.x + horizontal_movement(10, 1)
       }
     } else {
+      for (let text of test_text_lst) {
+        text.y = text.y + vertical_motion(10, 1, 90, 6.6)
+      }
       p.fill(0, 102, 153, 51)
     }
 
