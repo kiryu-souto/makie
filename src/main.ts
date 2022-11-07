@@ -6,7 +6,7 @@ import * as origin_draw from './2_molecules/draws/object_draw'
 import p5 from 'p5'
 
 let x: number = 50
-let test_text_lst = [new text.Text(10, 220, "hogehoge")]
+let test_text_lst = [new text.Text(new p5.Vector(10, 220), new p5.Vector(10, 300) , "hogehoge")]
 
 const sketch = (p: p5) => {
   p.setup = () => {
@@ -19,11 +19,11 @@ const sketch = (p: p5) => {
       p.fill(0)
       x = x + horizontal_movement(10, 1)
       for (let text of test_text_lst) {
-        text.x = text.x + horizontal_movement(10, 1)
+        text.pos.x = text.pos.x + horizontal_movement(10, 1)
       }
     } else {
       for (let text of test_text_lst) {
-        text.y = text.y + vertical_motion(10, 1, 90, 6.6)
+        text.pos.y = text.pos.y + vertical_motion(10, 1, 90, 6.6)
       }
       p.fill(0, 102, 153, 51)
     }

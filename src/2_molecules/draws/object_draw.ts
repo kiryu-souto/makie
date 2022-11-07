@@ -7,7 +7,7 @@ function origin_draw (
   ) {
     for (let item of lst) {
       if (item instanceof text.Text) {
-        p.text(item.content, item.x, item.y)
+        p.text(item.content, item.pos.x, item.pos.y)
       }
     }
 }

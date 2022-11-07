@@ -1,9 +1,11 @@
+import p5 from 'p5'
+
 class Substance {
-    x: number
-    y: number
-    constructor( x: number, y: number) {
-        this.x = x
-        this.y = y
+    pos: p5.Vector
+    size: p5.Vector
+    constructor( pos: p5.Vector, size: p5.Vector) {
+        this.pos = pos
+        this.size = size
     }
 }
 
