@@ -1,12 +1,15 @@
 import './style.css'
 import {horizontal_movement, vertical_motion} from './1_atoms/math/game'
-// import {Substance} from './3_organisms/charactor/charactor'
 import * as text from './1_atoms/objects/text'
+import * as line from './1_atoms/objects/line'
+import * as colliders from './1_atoms/collision_detection/collider'
 import * as origin_draw from './2_molecules/draws/object_draw'
 import p5 from 'p5'
 
-let x: number = 50
-let test_text_lst = [new text.Text(new p5.Vector(10, 220), new p5.Vector(10, 300) , "hogehoge")]
+// object declaration
+let test_text_lst = [new text.Text(new p5.Vector(10, 220), new p5.Vector(20, 230) , "hogehoge")]
+let test_line_lst = [new line.Line(new p5.Vector(100, 100), new p5.Vector(200, 300)),
+                    new line.Line(new p5.Vector(0, 300), new p5.Vector(300, 300))]
 
 const sketch = (p: p5) => {
   p.setup = () => {
@@ -16,22 +19,51 @@ const sketch = (p: p5) => {
   p.draw = () => {
     p.background(255);
     if (p.mouseIsPressed) {
+      
+      let test = false
       p.fill(0)
-      x = x + horizontal_movement(10, 1)
+
       for (let text of test_text_lst) {
-        text.pos.x = text.pos.x + horizontal_movement(10, 1)
+        
+        for (let line of test_line_lst) {
+
+          if ( ( colliders.square_collide(text.pos, text.size, line.pos, line.size) instanceof colliders.Inside ) ) {
+            test = true
+          }
+
+        }
+
+        if (test == false) {
+          text.pos.x = text.pos.x + horizontal_movement(10, 1)
+        }
+
       }
-    } else {
+
+    } else if (p.keyIsPressed) {
+
+      let test = false
+
       for (let text of test_text_lst) {
-        text.pos.y = text.pos.y + vertical_motion(10, 1, 90, 6.6)
+
+        for (let line of test_line_lst) {
+          if ( ( colliders.square_collide(text.pos, text.size, line.pos, line.size) instanceof colliders.Inside ) ) {
+            test = true
+          }
+        }
+      
+        if (test == false) {
+          text.pos.y = text.pos.y + vertical_motion(10, 1, 10, 6.6)
+        }
+      
       }
+
       p.fill(0, 102, 153, 51)
     }
 
     p.fill(0)
-    x = x + horizontal_movement(10, 1)
     // text.text_draw(p, test_text_lst)
     origin_draw.origin_draw(p, test_text_lst)
+    origin_draw.origin_draw(p, test_line_lst)
   }
   // p.mousePressed = () => {
   //   p.fill(0)
