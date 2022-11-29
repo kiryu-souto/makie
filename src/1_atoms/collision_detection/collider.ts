@@ -1,4 +1,5 @@
 import p5 from 'p5'
+import { matrix, subtract } from 'mathjs'
 
 export class Bottom {}
 export class Top {}
@@ -17,12 +18,6 @@ function square_collide(a_pos: p5.Vector, a_size: p5.Vector, b_pos: p5.Vector, b
     let new_b_pos = new p5.Vector(b_pos.x, b_pos.y)
     let new_b_size = new p5.Vector(b_size.x, b_size.y)
 
-    // let a_min = new_a_pos.sub(new_a_size.x, new_a_size.y).div(2)
-    // let a_max = new_a_pos.add(new_a_size.x, new_a_size.y).div(2)
-
-    // let b_min = new_b_pos.sub(new_b_size.x, new_b_size.y).div(2)
-    // let b_max = new_b_pos.add(new_b_size.x, new_b_size.y).div(2)
-
     let lst_b_point = [[new_b_pos.x, new_b_pos.y], 
                        [new_b_pos.x, new_b_pos.y + new_b_size.y],
                        [new_b_pos.x + new_b_size.y, new_b_pos],
@@ -37,94 +32,39 @@ function square_collide(a_pos: p5.Vector, a_size: p5.Vector, b_pos: p5.Vector, b
     }
 
     return new None()
-
-
-    // const div_new_a_size = new_a_size.div(2)
-    // const div_new_b_size = new_b_size.div(2)
-
-    // let a_min = new_a_pos.sub(div_new_a_size.x, div_new_a_size.y)
-    // let a_max = new_a_pos.add(div_new_a_size.x, div_new_a_size.y)
-
-    // let b_min = new_b_pos.sub(div_new_b_size.x, div_new_b_size.y)
-    // let b_max = new_b_pos.add(div_new_b_size.x, div_new_b_size.y)
-
-    // let x_collision
-    // let y_collision
-    // let x_depth
-    // let y_depth
-
-    // if (a_min.x < b_max.x && a_max.x > b_min.x && a_min.y < b_max.y && a_max.y > b_min.y) {
-    //     if (a_min.x < b_min.x && a_max.x > b_min.x && a_max.x < b_max.x) {
-    //         x_collision = new Right()
-    //         x_depth = a_max.x - b_min.x
-    //     } else if (a_min.x > b_min.x && a_min.x < b_max.x && a_max.x > b_max.x) {
-    //         x_collision = new Left()
-    //         x_depth = b_max.x - a_min.x
-    //     } else {
-    //         x_collision = new Inside
-    //         x_depth = -Infinity
-    //     }
-
-    //     if (a_min.y < b_min.y && a_max.y > b_min.y && a_max.y < b_max.y) {
-    //         y_collision = new Bottom()
-    //         y_depth = a_max.y - b_min.y
-    //     } else if (a_min.y > b_min.y && a_min.y < b_max.y && a_max.y > b_max.y) {
-    //         y_collision = new Top()
-    //         y_depth = b_max.y - a_min.y
-    //     } else {
-    //         y_collision = new Inside()
-    //         y_depth = -Infinity
-    //     }
-
-    //     if (y_depth < x_depth ) {
-    //         return y_collision
-    //     } else {
-    //         return x_collision
-    //     }
-    // } else {
-    //     return new None()
-    // }
 }
 
-// pub fn square_collide(a_pos: Vec3, a_size: Vec2, b_pos: Vec3, b_size: Vec2) -> Option<Collision> {
-//     let a_min = a_pos.truncate() - a_size / 2.0;
-//     let a_max = a_pos.truncate() + a_size / 2.0;
+// arrの符号化を行う
+// Arrayはanyが引数になっているためanyにする。
+function plus_minus_encode (arr: Array<any>): Array<boolean> {
+    let ans : boolean[] = []
+    for (let item of arr) {
+        if (item >= 0) {
+            ans.push(true)
+        } else {
+            ans.push(false)
+        }
+    }
+    return ans
+}
 
-//     let b_min = b_pos.truncate() - b_size / 2.0;
-//     let b_max = b_pos.truncate() + b_size / 2.0;
+// 0,1と2,3にxorを実行する。その結果をandで出力する
+function encode2 (arr: boolean[][]) : number {
+    // ( a || b ) && !( a && b )
+    const ans: number[] = arr.map(item => {
+        const ans1: boolean = (item[0] || item[1]) && !(item[0] && item[1])
+        const ans2: boolean = (item[2] || item[3]) && !(item[2] && item[3])
+        return ans1 && ans2 ? 1 : 0
+    })
+    return ans.reduce((accumulator, currentValue) => accumulator + currentValue,0)
+}
 
-//     // check to see if the two rectangles are intersecting
-//     if a_min.x < b_max.x && a_max.x > b_min.x && a_min.y < b_max.y && a_max.y > b_min.y {
-//         // check to see if we hit on the left or right side
-//         let (x_collision, x_depth) = if a_min.x < b_min.x && a_max.x > b_min.x && a_max.x < b_max.x
-//         {
-//             (Collision::Left, b_min.x - a_max.x)
-//         } else if a_min.x > b_min.x && a_min.x < b_max.x && a_max.x > b_max.x {
-//             (Collision::Right, a_min.x - b_max.x)
-//         } else {
-//             (Collision::Inside, -f32::INFINITY)
-//         };
+function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Vector, b_end: p5.Vector): number {
+    const test = matrix([b_start.x, b_end.x, b_start.y, b_end.y])
+    let test2 = subtract(test, matrix([a_start.x, a_end.x, a_start.y, a_end.y]))
+    console.log([plus_minus_encode(test2.toArray())])
+    return encode2([plus_minus_encode(test2.toArray())])
+}
 
-//         // check to see if we hit on the top or bottom side
-//         let (y_collision, y_depth) = if a_min.y < b_min.y && a_max.y > b_min.y && a_max.y < b_max.y
-//         {
-//             (Collision::Bottom, b_min.y - a_max.y)
-//         } else if a_min.y > b_min.y && a_min.y < b_max.y && a_max.y > b_max.y {
-//             (Collision::Top, a_min.y - b_max.y)
-//         } else {
-//             (Collision::Inside, -f32::INFINITY)
-//         };
-
-//         // if we had an "x" and a "y" collision, pick the "primary" side using penetration depth
-//         if y_depth.abs() < x_depth.abs() {
-//             Some(y_collision)
-//         } else {
-//             Some(x_collision)
-//         }
-//     } else {
-//         None
-//     }
-// }
-
-export {square_collide}
+export {square_collide, new_square_collide}
 export type {Collision}
