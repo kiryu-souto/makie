@@ -36,21 +36,12 @@ function square_collide(a_pos: p5.Vector, a_size: p5.Vector, b_pos: p5.Vector, b
 
 // arrの符号化を行う
 // Arrayはanyが引数になっているためanyにする。
-function plus_minus_encode (arr: Array<any>): Array<boolean> {
-    let ans : boolean[] = []
-    for (let item of arr) {
-        if (item >= 0) {
-            ans.push(true)
-        } else {
-            ans.push(false)
-        }
-    }
-    return ans
+function boolean_encode (arr: Array<any>): Array<boolean> {
+    return arr.map(item => { return item >= 0 ? true : false})
 }
 
 // 0,1と2,3にxorを実行する。その結果をandで出力する
-function encode2 (arr: boolean[][]) : number {
-    // ( a || b ) && !( a && b )
+function xor_encode (arr: boolean[][]) : number {
     const ans: number[] = arr.map(item => {
         const ans1: boolean = (item[0] || item[1]) && !(item[0] && item[1])
         const ans2: boolean = (item[2] || item[3]) && !(item[2] && item[3])
@@ -59,11 +50,11 @@ function encode2 (arr: boolean[][]) : number {
     return ans.reduce((accumulator, currentValue) => accumulator + currentValue,0)
 }
 
-function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Vector, b_end: p5.Vector): number {
-    const test = matrix([b_start.x, b_end.x, b_start.y, b_end.y])
-    let test2 = subtract(test, matrix([a_start.x, a_end.x, a_start.y, a_end.y]))
-    console.log([plus_minus_encode(test2.toArray())])
-    return encode2([plus_minus_encode(test2.toArray())])
+// 線と線の当たり判定用の関数
+function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Vector, b_end: p5.Vector): Collision {
+    const receive_matrix = matrix([b_start.x, b_end.x, b_start.y, b_end.y])
+    const calc_matrix = subtract(receive_matrix, matrix([a_start.x, a_end.x, a_start.y, a_end.y]))
+    return xor_encode([boolean_encode(calc_matrix.toArray())]) > 0 ? new Inside() : new None()
 }
 
 export {square_collide, new_square_collide}

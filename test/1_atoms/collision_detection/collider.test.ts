@@ -21,7 +21,7 @@ test('新しい当たり判定', function () {
         new p5.Vector(30, 10),
         new p5.Vector(80, 10)
     )
-    expect(test_val).toBe(1)
+    expect(test_val.constructor).toBe(colliders.Inside)
 })
 
 // test('配列計算', function () {
