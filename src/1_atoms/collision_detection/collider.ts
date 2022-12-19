@@ -1,4 +1,5 @@
 import p5 from 'p5'
+import {matrix, subtract} from 'mathjs'
 
 export class Bottom {}
 export class Top {}
@@ -32,118 +33,127 @@ function square_collide(a_pos: p5.Vector, a_size: p5.Vector, b_pos: p5.Vector, b
     return new None()
 }
 
-function point_array_func (pos_vec: p5.Vector, size_vec: p5.Vector) : p5.Vector[] {
-    return [pos_vec, 
-        p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, 0,0)),
-        p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, size_vec.y,0)),
-        p5.Vector.add(pos_vec, new p5.Vector(0, size_vec.y,0))]
-}
+// function point_array_func (pos_vec: p5.Vector, size_vec: p5.Vector) : p5.Vector[] {
+//     return [pos_vec, 
+//         p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, 0,0)),
+//         p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, size_vec.y,0)),
+//         p5.Vector.add(pos_vec, new p5.Vector(0, size_vec.y,0))]
+// }
 
 // 四角形の座標とサイズから線データの配列を生成する
-// function line_vector (pos_vec: p5.Vector, size_vec: p5.Vector) : number[][] {
-//     const point_array = [pos_vec, 
-//                         p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, 0,0)),
-//                         p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, size_vec.y,0)),
-//                         p5.Vector.add(pos_vec, new p5.Vector(0, size_vec.y,0))]
-//     return point_array.map((item, index, arr) => {
-//         return index < arr.length - 1 ? [item.x, arr[index + 1].x, item.y,  arr[index + 1].y] : [item.x, arr[0].x, item.y, arr[0].y]
-//     })
-// }
+function line_vector (pos_vec: p5.Vector, size_vec: p5.Vector) : number[][] {
+    const point_array = [pos_vec, 
+                        p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, 0,0)),
+                        p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, size_vec.y,0)),
+                        p5.Vector.add(pos_vec, new p5.Vector(0, size_vec.y,0))]
+    return point_array.map((item, index, arr) => {
+        return index < arr.length - 1 ? [item.x, arr[index + 1].x, item.y,  arr[index + 1].y] : [item.x, arr[0].x, item.y, arr[0].y]
+    })
+}
 
 // arrの符号化を行う
 // Arrayはanyが引数になっているためanyにする。
-// function boolean_encode (arr: Array<any>): Array<boolean> {
-//     return arr.map(item => { return item >= 0 ? true : false})
-// }
+function boolean_encode (arr: Array<any>): Array<boolean> {
+    return arr.map(item => { return item >= 0 ? true : false})
+}
 
 // 0,1と2,3にxorを実行する。その結果をandで出力する
-// function xor_encode (arr: boolean[][]) : number {
-//     const ans: number[] = arr.map(item => {
-//         const ans1: boolean = (item[0] || item[1]) && !(item[0] && item[1])
-//         const ans2: boolean = (item[2] || item[3]) && !(item[2] && item[3])
-//         return ans1 && ans2 ? 1 : 0
-//     })
-//     return ans.reduce((accumulator, currentValue) => accumulator + currentValue,0)
-// }
+function xor_encode (arr: boolean[][]) : number {
+    const ans: number[] = arr.map(item => {
+        const ans1: boolean = (item[0] || item[1]) && !(item[0] && item[1])
+        const ans2: boolean = (item[2] || item[3]) && !(item[2] && item[3])
+        return ans1 && ans2 ? 1 : 0
+    })
+    return ans.reduce((accumulator, currentValue) => accumulator + currentValue,0)
+}
 
-// 線と線の当たり判定用の関数
+// 四角形同士の当たり判定検出
 function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Vector, b_end: p5.Vector): Collision {
-
-    // Xの最大値と最小値をaとbの四角形から算出
-    const a_max_x = Math.max(...point_array_func(a_start, a_end).map((item) => {
-        return item.x
-    }))
-    const a_min_x = Math.min(...point_array_func(a_start, a_end).map((item) => {
-        return item.x
-    }))
-    const b_max_x = Math.max(...point_array_func(b_start, b_end).map((item) => {
-        return item.x
-    }))
-    const b_min_x = Math.min(...point_array_func(b_start, b_end).map((item) => {
-        return item.x
-    }))
-
-    // Yの最大値と最小値をaとbの四角形から算出
-    const a_max_y = Math.max(...point_array_func(a_start, a_end).map((item) => {
-        return item.y
-    }))
-    const a_min_y = Math.min(...point_array_func(a_start, a_end).map((item) => {
-        return item.y
-    }))
-    const b_max_y = Math.max(...point_array_func(b_start, b_end).map((item) => {
-        return item.y
-    }))
-    const b_min_y = Math.min(...point_array_func(b_start, b_end).map((item) => {
-        return item.y
-    }))
-
-
-
-    if ((a_min_x < b_max_x && a_max_x > b_min_x) && (a_min_y < b_max_y && a_max_y > b_min_y)) {
-        return new Inside()
-        // // a_min.x < b_min.x && a_max.x > b_min.x && a_max.x < b_max.x
-        // // b_min.x - a_max.x
-        // // Collision::Left
-        // if ((a_min_x < b_min_x && a_max_x > b_min_x) && a_max_x < b_max_x) {
-        //     x_collision = new Left()
-        //     x_depth = Math.abs(b_min_x - a_max_x)
-        //     // a_min.x > b_min.x && a_min.x < b_max.x && a_max.x > b_max.x
-        //     // Collision::Right
-        //     // a_min.x - b_max.x
-        // } else if((a_min_x > b_min_x && a_min_x < b_max_x) && a_max_x > b_max_x) {
-        //     x_collision = new Right()
-        //     x_depth = Math.abs(a_min_x - b_max_x)
-        // } else {
-        //     x_collision = new Inside()
-        // }
-
-        // // a_min.y < b_min.y && a_max.y > b_min.y && a_max.y < b_max.y
-        // // Collision::Bottom
-        // // b_min.y - a_max.y
-        // if ((a_min_y < b_min_y && a_max_y > b_min_y) && a_max_y < b_max_y) {
-        //     y_collision = new Bottom()
-        //     y_depth = Math.abs(b_min_y - a_max_y)
-        //     // a_min.y > b_min.y && a_min.y < b_max.y && a_max.y > b_max.y 
-        //     // a_min.y - b_max.y
-        // } else if ((a_min_y > b_min_y && a_min_y < b_max_y) && a_max_y > b_max_y) {
-        //     y_collision = new Top()
-        //     y_depth = Math.abs(a_min_y - b_max_y)
-        // } else {
-        //     x_collision = new Inside()
-        // }
-        // console.log("depth", x_depth, y_depth)
-        
-        // if ( y_depth < x_depth ) {
-        //     return x_collision
-        // } else {
-        //     return y_collision
-        // }
-
-    } else {
-        return new None()
-    }
-    
+    const line_vectors = line_vector(b_start, b_end)
+    const receive_matrix = matrix([b_start.x, b_end.x, b_start.y, b_end.y])
+    const calc_matrix = subtract(receive_matrix, matrix([a_start.x, a_end.x, a_start.y, a_end.y]))
+    return xor_encode([boolean_encode(calc_matrix.toArray())]) > 0 ? new Inside() : new None()
 }
 
 export {square_collide, new_square_collide}
 export type {Collision}
+
+// 線と線の当たり判定用の関数
+// function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Vector, b_end: p5.Vector): Collision {
+
+//     // Xの最大値と最小値をaとbの四角形から算出
+//     const a_max_x = Math.max(...point_array_func(a_start, a_end).map((item) => {
+//         return item.x
+//     }))
+//     const a_min_x = Math.min(...point_array_func(a_start, a_end).map((item) => {
+//         return item.x
+//     }))
+//     const b_max_x = Math.max(...point_array_func(b_start, b_end).map((item) => {
+//         return item.x
+//     }))
+//     const b_min_x = Math.min(...point_array_func(b_start, b_end).map((item) => {
+//         return item.x
+//     }))
+
+//     // Yの最大値と最小値をaとbの四角形から算出
+//     const a_max_y = Math.max(...point_array_func(a_start, a_end).map((item) => {
+//         return item.y
+//     }))
+//     const a_min_y = Math.min(...point_array_func(a_start, a_end).map((item) => {
+//         return item.y
+//     }))
+//     const b_max_y = Math.max(...point_array_func(b_start, b_end).map((item) => {
+//         return item.y
+//     }))
+//     const b_min_y = Math.min(...point_array_func(b_start, b_end).map((item) => {
+//         return item.y
+//     }))
+
+
+
+//     if ((a_min_x < b_max_x && a_max_x > b_min_x) && (a_min_y < b_max_y && a_max_y > b_min_y)) {
+//         return new Inside()
+//         // // a_min.x < b_min.x && a_max.x > b_min.x && a_max.x < b_max.x
+//         // // b_min.x - a_max.x
+//         // // Collision::Left
+//         // if ((a_min_x < b_min_x && a_max_x > b_min_x) && a_max_x < b_max_x) {
+//         //     x_collision = new Left()
+//         //     x_depth = Math.abs(b_min_x - a_max_x)
+//         //     // a_min.x > b_min.x && a_min.x < b_max.x && a_max.x > b_max.x
+//         //     // Collision::Right
+//         //     // a_min.x - b_max.x
+//         // } else if((a_min_x > b_min_x && a_min_x < b_max_x) && a_max_x > b_max_x) {
+//         //     x_collision = new Right()
+//         //     x_depth = Math.abs(a_min_x - b_max_x)
+//         // } else {
+//         //     x_collision = new Inside()
+//         // }
+
+//         // // a_min.y < b_min.y && a_max.y > b_min.y && a_max.y < b_max.y
+//         // // Collision::Bottom
+//         // // b_min.y - a_max.y
+//         // if ((a_min_y < b_min_y && a_max_y > b_min_y) && a_max_y < b_max_y) {
+//         //     y_collision = new Bottom()
+//         //     y_depth = Math.abs(b_min_y - a_max_y)
+//         //     // a_min.y > b_min.y && a_min.y < b_max.y && a_max.y > b_max.y 
+//         //     // a_min.y - b_max.y
+//         // } else if ((a_min_y > b_min_y && a_min_y < b_max_y) && a_max_y > b_max_y) {
+//         //     y_collision = new Top()
+//         //     y_depth = Math.abs(a_min_y - b_max_y)
+//         // } else {
+//         //     x_collision = new Inside()
+//         // }
+//         // console.log("depth", x_depth, y_depth)
+        
+//         // if ( y_depth < x_depth ) {
+//         //     return x_collision
+//         // } else {
+//         //     return y_collision
+//         // }
+
+//     } else {
+//         return new None()
+//     }
+    
+// }
+
