@@ -25,45 +25,42 @@ const sketch = (p: p5) => {
   p.draw = () => {
     p.background(255);
     if (p.keyIsPressed) {
-      
-      let test = false
       p.fill(0)
 
       for (let text of own_rect_lst) {
         
-        for (let line of test_rect_lst) {
-          if ( colliders.new_square_collide(text.pos, text.size, line.pos, line.size) instanceof colliders.Inside ) {
-            test = true
+        if (p.keyCode == p.RIGHT_ARROW) {
+          for (let line of test_rect_lst) {
+            const new_own_size = new p5.Vector(text.size.x + horizontal_movement(10, 1), text.pos.y)
+            if ( !(colliders.new_square_collide(text.pos, new_own_size, line.pos, line.size) instanceof colliders.Inside) ) {
+              text.pos.x = text.pos.x + horizontal_movement(10, 1)
+            }
+            console.log("test1", colliders.new_square_collide(text.pos, new_own_size, line.pos, line.size).constructor ), 
+            console.log("test2", !(colliders.new_square_collide(text.pos, new_own_size, line.pos, line.size) instanceof colliders.Inside))
           }
-        }
-
-        if (test == false) {
-          if (p.keyCode == p.RIGHT_ARROW) {
-            text.pos.x = text.pos.x + horizontal_movement(10, 1)
-          } else if (p.keyCode == p.LEFT_ARROW) {
-            text.pos.x = text.pos.x - horizontal_movement(10, 1)
+        } else if (p.keyCode == p.LEFT_ARROW) {
+          for (let line of test_rect_lst) {
+            const new_own_size = new p5.Vector(text.size.x - horizontal_movement(10, 1), text.pos.y)
+            if ( !(colliders.new_square_collide(text.pos, new_own_size, line.pos, line.size) instanceof colliders.Inside) ) {
+              text.pos.x = text.pos.x - horizontal_movement(10, 1)
+            }
+            console.log("test3", colliders.new_square_collide(text.pos, new_own_size, line.pos, line.size).constructor)
+            console.log("test4", !(colliders.new_square_collide(text.pos, new_own_size, line.pos, line.size) instanceof colliders.Inside))
           }
         }
 
       }
 
-    } else {
-
-      let test = false
+    } else if(p.mouseIsPressed) {
 
       for (let text of own_rect_lst) {
-
         for (let line of test_rect_lst) {
-          if ( (colliders.new_square_collide(text.pos, text.size, line.pos, line.size) instanceof colliders.Bottom)) {
-            test = true
-          }
-          console.log("test_boolean2", colliders.new_square_collide(text.pos, text.size, line.pos, line.size).constructor)
-        }
-      
-        if (test == false) {
-          text.pos.y = text.pos.y + vertical_motion(10, 1, 10, 6.6)
-        }
-      
+          const new_own_pos = new p5.Vector(text.pos.x - vertical_motion(1, 1, 10, 6.6), text.pos.y)
+          if ( !(colliders.new_square_collide(new_own_pos, text.size, line.pos, line.size) instanceof colliders.Top)) {
+            text.pos.y = text.pos.y + vertical_motion(1, 1, 10, 6.6)
+          } 
+          console.log(colliders.new_square_collide(new_own_pos, text.size, line.pos, line.size).constructor)
+        }      
       }
 
       p.fill(0, 102, 153, 51)

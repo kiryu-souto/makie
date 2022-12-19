@@ -98,52 +98,46 @@ function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Ve
     }))
 
 
-    console.log("x",a_max_x, a_min_x, b_max_x, b_min_x)
-    console.log("y", a_max_y, a_min_y, b_max_y, b_min_y)
-
-    let x_collision: Collision = new Inside()
-    let y_collision: Collision = new Inside()
-    let x_depth = 0
-    let y_depth = 0
 
     if ((a_min_x < b_max_x && a_max_x > b_min_x) && (a_min_y < b_max_y && a_max_y > b_min_y)) {
-        // a_min.x < b_min.x && a_max.x > b_min.x && a_max.x < b_max.x
-        // b_min.x - a_max.x
-        // Collision::Left
-        if ((a_min_x < b_min_x && a_max_x > b_min_x) && a_max_x < b_max_x) {
-            x_collision = new Left()
-            x_depth = Math.abs(b_min_x - a_max_x)
-            // a_min.x > b_min.x && a_min.x < b_max.x && a_max.x > b_max.x
-            // Collision::Right
-            // a_min.x - b_max.x
-        } else if((a_min_x > b_min_x && a_min_x < b_max_x) && a_max_x > b_max_x) {
-            x_collision = new Right()
-            x_depth = Math.abs(a_min_x - b_max_x)
-        } else {
-            x_collision = new Inside()
-        }
+        return new Inside()
+        // // a_min.x < b_min.x && a_max.x > b_min.x && a_max.x < b_max.x
+        // // b_min.x - a_max.x
+        // // Collision::Left
+        // if ((a_min_x < b_min_x && a_max_x > b_min_x) && a_max_x < b_max_x) {
+        //     x_collision = new Left()
+        //     x_depth = Math.abs(b_min_x - a_max_x)
+        //     // a_min.x > b_min.x && a_min.x < b_max.x && a_max.x > b_max.x
+        //     // Collision::Right
+        //     // a_min.x - b_max.x
+        // } else if((a_min_x > b_min_x && a_min_x < b_max_x) && a_max_x > b_max_x) {
+        //     x_collision = new Right()
+        //     x_depth = Math.abs(a_min_x - b_max_x)
+        // } else {
+        //     x_collision = new Inside()
+        // }
 
-        // a_min.y < b_min.y && a_max.y > b_min.y && a_max.y < b_max.y
-        // Collision::Bottom
-        // b_min.y - a_max.y
-        if ((a_min_y < b_min_y && a_max_y > b_min_y) && a_max_y < b_max_y) {
-            y_collision = new Bottom()
-            y_depth = Math.abs(b_min_y - a_max_y)
-            // a_min.y > b_min.y && a_min.y < b_max.y && a_max.y > b_max.y 
-            // a_min.y - b_max.y
-        } else if ((a_min_y > b_min_y && a_min_y < b_max_y) && a_max_y > b_max_y) {
-            y_collision = new Top()
-            y_depth = Math.abs(a_min_y - b_max_y)
-        } else {
-            x_collision = new Inside()
-        }
-        console.log("depth", x_depth, y_depth)
+        // // a_min.y < b_min.y && a_max.y > b_min.y && a_max.y < b_max.y
+        // // Collision::Bottom
+        // // b_min.y - a_max.y
+        // if ((a_min_y < b_min_y && a_max_y > b_min_y) && a_max_y < b_max_y) {
+        //     y_collision = new Bottom()
+        //     y_depth = Math.abs(b_min_y - a_max_y)
+        //     // a_min.y > b_min.y && a_min.y < b_max.y && a_max.y > b_max.y 
+        //     // a_min.y - b_max.y
+        // } else if ((a_min_y > b_min_y && a_min_y < b_max_y) && a_max_y > b_max_y) {
+        //     y_collision = new Top()
+        //     y_depth = Math.abs(a_min_y - b_max_y)
+        // } else {
+        //     x_collision = new Inside()
+        // }
+        // console.log("depth", x_depth, y_depth)
         
-        if ( y_depth < x_depth ) {
-            return x_collision
-        } else {
-            return y_collision
-        }
+        // if ( y_depth < x_depth ) {
+        //     return x_collision
+        // } else {
+        //     return y_collision
+        // }
 
     } else {
         return new None()
