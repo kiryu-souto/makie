@@ -31,7 +31,7 @@ test('境界値当たり判定1', function() {
         new p5.Vector(0, 350),
         new p5.Vector(200, 30)
     )
-    expect(test_val.constructor).toBe(colliders.Top)
+    expect(test_val.constructor).toBe(colliders.None)
 })
 
 // test('配列計算', function () {

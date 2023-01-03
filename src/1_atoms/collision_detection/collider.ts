@@ -1,5 +1,5 @@
 import p5 from 'p5'
-import {matrix, subtract} from 'mathjs'
+// import {matrix, subtract} from 'mathjs'
 
 export class Bottom {}
 export class Top {}
@@ -33,52 +33,60 @@ function square_collide(a_pos: p5.Vector, a_size: p5.Vector, b_pos: p5.Vector, b
     return new None()
 }
 
-// function point_array_func (pos_vec: p5.Vector, size_vec: p5.Vector) : p5.Vector[] {
-//     return [pos_vec, 
-//         p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, 0,0)),
-//         p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, size_vec.y,0)),
-//         p5.Vector.add(pos_vec, new p5.Vector(0, size_vec.y,0))]
-// }
 
-// 四角形の座標とサイズから線データの配列を生成する
-function line_vector (pos_vec: p5.Vector, size_vec: p5.Vector) : number[][] {
-    const point_array = [pos_vec, 
-                        p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, 0,0)),
-                        p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, size_vec.y,0)),
-                        p5.Vector.add(pos_vec, new p5.Vector(0, size_vec.y,0))]
-    return point_array.map((item, index, arr) => {
-        return index < arr.length - 1 ? [item.x, arr[index + 1].x, item.y,  arr[index + 1].y] : [item.x, arr[0].x, item.y, arr[0].y]
-    })
+
+function point_array_func (pos_vec: p5.Vector, size_vec: p5.Vector) : p5.Vector[] {
+    return [pos_vec, 
+        p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, 0,0)),
+        p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, size_vec.y,0)),
+        p5.Vector.add(pos_vec, new p5.Vector(0, size_vec.y,0))]
 }
 
-// arrの符号化を行う
-// Arrayはanyが引数になっているためanyにする。
-function boolean_encode (arr: Array<any>): Array<boolean> {
-    return arr.map(item => { return item >= 0 ? true : false})
-}
-
-// 0,1と2,3にxorを実行する。その結果をandで出力する
-function xor_encode (arr: boolean[][]) : number {
-    const ans: number[] = arr.map(item => {
-        const ans1: boolean = (item[0] || item[1]) && !(item[0] && item[1])
-        const ans2: boolean = (item[2] || item[3]) && !(item[2] && item[3])
-        return ans1 && ans2 ? 1 : 0
-    })
-    return ans.reduce((accumulator, currentValue) => accumulator + currentValue,0)
-}
-
-// 四角形同士の当たり判定検出
 function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Vector, b_end: p5.Vector): Collision {
-    const line_vectors = line_vector(b_start, b_end)
-    const receive_matrix = matrix([b_start.x, b_end.x, b_start.y, b_end.y])
-    const calc_matrix = subtract(receive_matrix, matrix([a_start.x, a_end.x, a_start.y, a_end.y]))
-    return xor_encode([boolean_encode(calc_matrix.toArray())]) > 0 ? new Inside() : new None()
+
+    // Xの最大値と最小値をaとbの四角形から算出
+    const a_max_x = Math.max(...point_array_func(a_start, a_end).map((item) => {
+        return item.x
+    }))
+    const a_min_x = Math.min(...point_array_func(a_start, a_end).map((item) => {
+        return item.x
+    }))
+    const b_max_x = Math.max(...point_array_func(b_start, b_end).map((item) => {
+        return item.x
+    }))
+    const b_min_x = Math.min(...point_array_func(b_start, b_end).map((item) => {
+        return item.x
+    }))
+
+    // Yの最大値と最小値をaとbの四角形から算出
+    const a_max_y = Math.max(...point_array_func(a_start, a_end).map((item) => {
+        return item.y
+    }))
+    const a_min_y = Math.min(...point_array_func(a_start, a_end).map((item) => {
+        return item.y
+    }))
+    const b_max_y = Math.max(...point_array_func(b_start, b_end).map((item) => {
+        return item.y
+    }))
+    const b_min_y = Math.min(...point_array_func(b_start, b_end).map((item) => {
+        return item.y
+    }))
+
+
+
+    if ((a_min_x < b_max_x && a_max_x > b_min_x) && (a_min_y < b_max_y && a_max_y > b_min_y)) {
+        return new Inside()
+    } else {
+        return new None()
+    }
+    
 }
 
 export {square_collide, new_square_collide}
 export type {Collision}
 
 // 線と線の当たり判定用の関数
+// この関数は複数の四角形がある場合処理が間に合わない。おそらく計算効率が悪い。
 // function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Vector, b_end: p5.Vector): Collision {
 
 //     // Xの最大値と最小値をaとbの四角形から算出
@@ -157,3 +165,60 @@ export type {Collision}
     
 // }
 
+
+// rubbish_code
+
+// function point_array_func (pos_vec: p5.Vector, size_vec: p5.Vector) : p5.Vector[] {
+//     return [pos_vec, 
+//         p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, 0,0)),
+//         p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, size_vec.y,0)),
+//         p5.Vector.add(pos_vec, new p5.Vector(0, size_vec.y,0))]
+// }
+
+// 四角形の座標とサイズから線データの配列を生成する
+// function line_vector (pos_vec: p5.Vector, size_vec: p5.Vector) : number[][] {
+//     const point_array = [pos_vec, 
+//                         p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, 0,0)),
+//                         p5.Vector.add(pos_vec, new p5.Vector(size_vec.x, size_vec.y,0)),
+//                         p5.Vector.add(pos_vec, new p5.Vector(0, size_vec.y,0))]
+//     return point_array.map((item, index, arr) => {
+//         return index < arr.length - 1 ? [item.x, arr[index + 1].x, item.y,  arr[index + 1].y] : [item.x, arr[0].x, item.y, arr[0].y]
+//     })
+// }
+
+// ここの処理は間違えている。行列式の加算、減算は行列の数が同じでないと成立しない。
+// 乗算、除算の場合、行の数がk>=vでないと成り立たない。明らかに計算を間違えている。
+// 参考資料: https://www.krrk0.com/matrix-addition-subtraction/
+// function test_subtract (a_matrix: number[][], b_matrix: number[] ) : number[][] {
+//     return a_matrix.map(function(a_item): number[] {
+//         return a_item.map(function(value, index): number {
+//             return value - b_matrix[index]
+//         }) 
+//     })
+// }
+
+// 行を任意の数で行列式に変換する
+// line: 複製する行の要素
+// column_num: 列数
+// function create_array(line_item:number[], column_num: number): number[][] {
+//     let arr: number[][] = [];
+//     for (let index = 0; index < column_num; index++) {
+//         arr.push(line_item)        
+//     }
+//     return arr
+// }
+
+// 自身の当たり判定処理
+// function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Vector, b_end: p5.Vector): Collision {
+// console.log("line_vectors",line_vectors)
+// console.log("create_array",create_array([a_start.x, a_end.x, a_start.y, a_end.y], line_vectors.length))
+// console.log("substract", subtract(matrix(line_vectors), 
+//                          matrix(create_array([a_start.x, a_end.x, a_start.y, a_end.y], line_vectors.length))
+//             ))
+// console.log("test_calc_matrix", "substract", subtract(matrix(line_vectors), 
+//                 matrix(create_array([a_start.x, a_end.x, a_start.y, a_end.y], line_vectors.length))
+//             ).toArray().map(value => {return value.valueOf()}))
+// console.log(test_subtract(line_vectors, [a_start.x, a_end.x, a_start.y, a_end.y]))
+// const test_calc_matrix = test_subtract(line_vectors, [a_start.x, a_end.x, a_start.y, a_end.y])
+// console.log(xor_encode( test_calc_matrix.map(function(item) { return boolean_encode(item) })))
+// }
