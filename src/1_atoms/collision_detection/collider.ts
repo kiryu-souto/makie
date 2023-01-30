@@ -1,4 +1,5 @@
 import p5 from 'p5'
+import { Rect } from './../objects/rect'
 // import {matrix, subtract} from 'mathjs'
 
 export class Bottom {}
@@ -42,7 +43,7 @@ function point_array_func (pos_vec: p5.Vector, size_vec: p5.Vector) : p5.Vector[
         p5.Vector.add(pos_vec, new p5.Vector(0, size_vec.y,0))]
 }
 
-function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Vector, b_end: p5.Vector): Collision {
+function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Vector, b_end: p5.Vector): String {
 
     // Xの最大値と最小値をaとbの四角形から算出
     const a_max_x = Math.max(...point_array_func(a_start, a_end).map((item) => {
@@ -75,14 +76,22 @@ function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Ve
 
 
     if ((a_min_x < b_max_x && a_max_x > b_min_x) && (a_min_y < b_max_y && a_max_y > b_min_y)) {
-        return new Inside()
+        return "inside"
     } else {
-        return new None()
+        return "none"
     }
     
 }
 
-export {square_collide, new_square_collide}
+function new_square_collide_2 (a_rect: Rect, b_rect: Rect) {
+        if ((a_rect.min_x < b_rect.max_x && a_rect.max_x > b_rect.min_x) && (a_rect.min_y < b_rect.max_y && a_rect.max_y > b_rect.min_y)) {
+            return "inside"
+        } else {
+            return "none"
+        }
+}
+
+export {square_collide, new_square_collide, new_square_collide_2}
 export type {Collision}
 
 // 線と線の当たり判定用の関数
