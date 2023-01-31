@@ -84,7 +84,7 @@ function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Ve
 }
 
 function new_square_collide_2 (a_rect: Rect, b_rect: Rect) {
-        if ((a_rect.min_x < b_rect.max_x && a_rect.max_x > b_rect.min_x) && (a_rect.min_y < b_rect.max_y && a_rect.max_y > b_rect.min_y)) {
+        if ((a_rect.min_x <= b_rect.max_x && a_rect.max_x >= b_rect.min_x) && (a_rect.min_y < b_rect.max_y && a_rect.max_y > b_rect.min_y)) {
             return "inside"
         } else {
             return "none"

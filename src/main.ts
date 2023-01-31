@@ -28,18 +28,27 @@ const sketch = (p: p5) => {
 
       let text = own_rect_lst[0]
 
-
+      let new_text = text
       if (p.keyCode == p.RIGHT_ARROW) {
         // const new_text_size = new p5.Vector(text.size.x + horizontal_movement(10, 1) , text.size.y )
-        const new_text_pos = new p5.Vector(text.pos.x + 1 , text.pos.y )
-        let new_text = text
+        // const new_text_pos = new p5.Vector(text.pos.x + 1 , text.pos.y )
+        new_text.set_x(1)
         for (let line of test_rect_lst) {
-          console.log("right")
-          console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) )
-          if ( colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) === "inside") {
+          // console.log("old_collide")
+          // console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) )
+          // console.log("test")
+          // console.log(new_text)
+          // console.log("test_line")
+          // console.log(line)
+          console.log("text")
+          console.log(text)
+          console.log("tet_collider")
+          console.log(colliders.new_square_collide_2(new_text, line))
+          if ( colliders.new_square_collide_2(new_text, line) === "inside") {
             break
           } else {
-            text.pos.x = text.pos.x + 1
+            // text.pos.x = text.pos.x + 1
+            text.set_x(1)
           }
         }
       } else if (p.keyCode == p.LEFT_ARROW) {
