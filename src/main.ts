@@ -23,79 +23,46 @@ const sketch = (p: p5) => {
 
   p.draw = () => {
     p.background(255);
+    let text = own_rect_lst[0]
+    let new_text = new rect.Rect(text.pos, text.size)
+    let attach_status = []
+
     if (p.keyIsPressed) {
       p.fill(0)
 
-      let text = own_rect_lst[0]
-
-      let new_text = text
       if (p.keyCode == p.RIGHT_ARROW) {
-        // const new_text_size = new p5.Vector(text.size.x + horizontal_movement(10, 1) , text.size.y )
-        // const new_text_pos = new p5.Vector(text.pos.x + 1 , text.pos.y )
         new_text.set_x(1)
-        for (let line of test_rect_lst) {
-          // console.log("old_collide")
-          // console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) )
-          // console.log("test")
-          // console.log(new_text)
-          // console.log("test_line")
-          // console.log(line)
-          console.log("text")
-          console.log(text)
-          console.log("tet_collider")
-          console.log(colliders.new_square_collide_2(new_text, line))
-          if ( colliders.new_square_collide_2(new_text, line) === "inside") {
-            break
-          } else {
-            // text.pos.x = text.pos.x + 1
-            text.set_x(1)
-          }
-        }
       } else if (p.keyCode == p.LEFT_ARROW) {
-        // const new_text_size = new p5.Vector(text.size.x - horizontal_movement(10, 1) , text.size.y )
-        const new_text_pos = new p5.Vector(text.pos.x - 1 , text.pos.y )
-        for (let line of test_rect_lst) {
-          console.log("left")
-          console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) )
-          if ( colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) === "inside") {
-            break
-          } else {
-            text.pos.x = text.pos.x - 1
-          }
-        }
+        new_text.set_x(-1)
       } else if(p.keyCode == p.DOWN_ARROW) {
-          // const new_text_size = new p5.Vector(text.size.x + 1  , text.size.y )
-          const new_text_pos = new p5.Vector(text.pos.x + 1 , text.pos.y )
-          for (let line of test_rect_lst) {
-            console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) === "inside" )
-            console.log("down")
-            console.log("text_pos", new_text_pos)
-            console.log("size", text.size)
-            if ( colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) === "inside") {
-              break
-            } else {
-              text.pos.y = text.pos.y + 1
-            }
-          }
-          p.fill(0, 102, 153, 51)
+        new_text.set_y(1)
       } else if (p.keyCode == p.UP_ARROW) {
-        // const new_text_size = new p5.Vector(text.size.x + 1  , text.size.y )
-        const new_text_pos = new p5.Vector(text.pos.x - 1 , text.pos.y )
-        for (let line of test_rect_lst) {
-          console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) === "inside" )
-          console.log("down")
-          console.log("text_pos", new_text_pos)
-          console.log("size", text.size)
-          if ( colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) === "inside") {
-            break
-          } else {
-            text.pos.y = text.pos.y - 1 
-          }
-        }
-        p.fill(0, 102, 153, 51)
+        new_text.set_y(-1)
       }
+    }
 
-    } 
+    // 当たり判定判別
+    for (let line of test_rect_lst) {
+      // console.log("old_collide")
+      // console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) )
+      // console.log("test")
+      // console.log(new_text)
+      // console.log("test_line")
+      // console.log(line)
+      console.log("text")
+      console.log(text)
+      console.log("tet_collider")
+      console.log(colliders.new_square_collide_2(new_text, line))
+      if ( colliders.new_square_collide_2(new_text, line) === "inside") {
+        attach_status.push('inside')
+      } else {
+        attach_status.push('none')
+      }
+    }
+
+    if (!attach_status.some(value => value == 'inside')) {
+      own_rect_lst[0] = new_text
+    }
 
     p.fill(0)
     origin_draw.origin_draw(p, own_rect_lst)
