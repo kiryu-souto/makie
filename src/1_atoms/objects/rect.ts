@@ -23,8 +23,8 @@ class Rect extends Substance {
 
     set_y(y: number) {
         this.pos = new p5.Vector(this.pos.x, this.pos.y + y)
-        this.max_x = this.max_y + y
-        this.min_x = this.min_y + y
+        this.max_y = this.max_y + y
+        this.min_y = this.min_y + y
     }
 
     set_x_y(x:number, y:number) {
