@@ -2,6 +2,7 @@ import { Substance } from './substance'
 import p5 from 'p5'
 
 class Rect extends Substance {
+    id: number
     max_y: number
     max_x: number
     min_y: number
@@ -9,6 +10,8 @@ class Rect extends Substance {
 
     constructor( pos: p5.Vector, size: p5.Vector, ) {
         super(pos, size);
+        const random_max = 1000
+        this.id = Math.random() * random_max
         this.max_y = Math.max(...[pos.y, pos.y + size.y])
         this.min_y = Math.min(...[pos.y, pos.y + size.y])
         this.max_x = Math.max(...[pos.x, pos.x + size.x])

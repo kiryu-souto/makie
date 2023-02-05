@@ -12,8 +12,8 @@ import p5 from 'p5'
 let own_rect_lst = [new rect.Rect(new p5.Vector(50, 220), new p5.Vector(20, 30))]
 let test_rect_lst = [ new rect.Rect(new p5.Vector(300, 100), new p5.Vector(30, 300)), 
                       new rect.Rect(new p5.Vector(0, 350), new p5.Vector(300, 30)),
-                     new rect.Rect(new p5.Vector(0, 100), new p5.Vector(30, 300)),
-                     new rect.Rect(new p5.Vector(0, 70), new p5.Vector(300, 30))]
+                      new rect.Rect(new p5.Vector(0, 100), new p5.Vector(30, 300)),
+                      new rect.Rect(new p5.Vector(0, 70), new p5.Vector(300, 30))]
 
 
 const sketch = (p: p5) => {
@@ -27,9 +27,12 @@ const sketch = (p: p5) => {
     let new_text = new rect.Rect(text.pos, text.size)
     let attach_status = []
 
+    // キープレスをしたときに発火する
     if (p.keyIsPressed) {
       p.fill(0)
 
+      // キーが入力された場合の分岐
+      // ここはアーキテクチャを変更して、抽象化することが可能だ。
       if (p.keyCode == p.RIGHT_ARROW) {
         new_text.set_x(1)
       } else if (p.keyCode == p.LEFT_ARROW) {
@@ -43,27 +46,13 @@ const sketch = (p: p5) => {
 
     // 当たり判定判別
     for (let line of test_rect_lst) {
-      // console.log("old_collide")
-      // console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) )
-      // console.log("test")
-      // console.log(new_text)
-      // console.log("test_line")
-      // console.log(line)
-      // console.log("text")
-      // console.log(text)
-      // console.log("tet_collider")
-      // console.log(colliders.new_square_collide_2(new_text, line))
       if ( colliders.new_square_collide_2(new_text, line) === "inside") {
-        attach_status.push('inside')
-      } else {
-        attach_status.push('none')
+        attach_status.push(text.id)
       }
     }
 
-    console.log(attach_status)
-    console.log(attach_status.some(value => value == 'inside'))
-
-    if (!attach_status.some(value => value == 'inside')) {
+    // 当たり判定がない場合の処理
+    if (!attach_status.some(value => value == text.id)) {
       own_rect_lst[0] = new_text
     }
 
