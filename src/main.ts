@@ -25,7 +25,7 @@ const sketch = (p: p5) => {
     p.background(255);
     let text = own_rect_lst[0]
     let new_text = new rect.Rect(text.pos, text.size)
-    let attach_status = []
+    let attach_status: Array<{[key: string]:rect.Rect;}> = []
 
     // キープレスをしたときに発火する
     if (p.keyIsPressed) {
@@ -42,17 +42,19 @@ const sketch = (p: p5) => {
       } else if (p.keyCode == p.UP_ARROW) {
         new_text.set_y(-1)
       }
+    } else {
+      new_text.set_y(1)
     }
 
     // 当たり判定判別
     for (let line of test_rect_lst) {
       if ( colliders.new_square_collide_2(new_text, line) === "inside") {
-        attach_status.push(text.id)
+        attach_status.push({"collided_object": text, "collide_object": line})
       }
     }
 
     // 当たり判定がない場合の処理
-    if (!attach_status.some(value => value == text.id)) {
+    if (!attach_status.some(value => value["collided_object"].id === text.id)) {
       own_rect_lst[0] = new_text
     }
 
