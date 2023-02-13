@@ -3,13 +3,14 @@ import {horizontal_movement, vertical_motion} from './1_atoms/math/game'
 import * as text from './1_atoms/objects/text'
 import * as line from './1_atoms/objects/line'
 import * as rect from './1_atoms/objects/rect'
+import {Ally} from './1_atoms/game_objects/ally'
 import * as colliders from './1_atoms/collision_detection/collider'
 import * as origin_draw from './2_molecules/draws/object_draw'
 import p5 from 'p5'
 
 // object declaration
 // let test_text_lst = [new text.Text(new p5.Vector(10, 220), new p5.Vector(20, 230) , "hogehoge")]
-let own_rect_lst = [new rect.Rect(new p5.Vector(50, 220), new p5.Vector(20, 30))]
+let own_rect_lst = [new Ally(new p5.Vector(50, 220), new p5.Vector(20, 30))]
 let test_rect_lst = [ new rect.Rect(new p5.Vector(300, 100), new p5.Vector(30, 300)), 
                       new rect.Rect(new p5.Vector(0, 350), new p5.Vector(300, 30)),
                       new rect.Rect(new p5.Vector(0, 100), new p5.Vector(30, 300)),
@@ -24,8 +25,9 @@ const sketch = (p: p5) => {
   p.draw = () => {
     p.background(255);
     let text = own_rect_lst[0]
-    let new_text = new rect.Rect(text.pos, text.size)
+    let new_text = new Ally(text.pos, text.size)
     let attach_status: Array<{[key: string]:rect.Rect;}> = []
+    let input_key = ""
 
     // キープレスをしたときに発火する
     if (p.keyIsPressed) {
@@ -34,16 +36,30 @@ const sketch = (p: p5) => {
       // キーが入力された場合の分岐
       // ここはアーキテクチャを変更して、抽象化することが可能だ。
       if (p.keyCode == p.RIGHT_ARROW) {
-        new_text.set_x(1)
+        input_key = "right"
       } else if (p.keyCode == p.LEFT_ARROW) {
-        new_text.set_x(-1)
+        input_key = "left"
       } else if(p.keyCode == p.DOWN_ARROW) {
-        new_text.set_y(1)
+        input_key = "down"
       } else if (p.keyCode == p.UP_ARROW) {
-        new_text.set_y(-1)
+        input_key = "up"
       }
+    }
+
+    // console.log(new_text.constructor.prototype)
+    // console.log(new_text.max_y)
+
+    if (input_key === "right") {
+      new_text.action("right")
+    } else if (input_key === "left") {
+      new_text.action("left")
+    } else if (input_key === "down") {
+      new_text.action("down")
+    } else if (input_key === "up") {
+      new_text.action("up")
     } else {
-      new_text.set_y(1)
+      // console.log(new_text.constructor.prototype)
+      new_text.action("down")
     }
 
     // 当たり判定判別

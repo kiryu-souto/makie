@@ -1,6 +1,10 @@
 import { Substance } from './substance'
 import p5 from 'p5'
 
+interface Actions {
+    action( method_name: string ): void;
+}
+
 class Rect extends Substance {
     id: number
     max_y: number
@@ -18,6 +22,18 @@ class Rect extends Substance {
         this.min_x = Math.min(...[pos.x, pos.x + size.x])
     }
 
+    // action = ( method_name: string ) => {
+    //     let method = this.constructor.prototype[method_name]
+    //     console.log("hello")
+    //     console.log(this.constructor.prototype.constructor)
+    //     console.log(method)
+    //     if (method !== undefined) {
+    //         method()
+    //     } else {
+    //         console.log("not find function")
+    //     }
+    // }
+    
     set_x(x: number) {
         this.pos = new p5.Vector(this.pos.x + x, this.pos.y)
         this.max_x = this.max_x + x
@@ -38,3 +54,4 @@ class Rect extends Substance {
 
 
 export{Rect}
+export type{Actions}
