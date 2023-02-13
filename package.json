@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "gpu.js": "^2.16.0",
-    "mathjs": "^11.4.0"
+    "mathjs": "^11.4.0",
+    "uuid": "^9.0.0"
   }
 }
