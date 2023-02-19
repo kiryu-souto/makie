@@ -1,7 +1,7 @@
 import { GameObject } from "./game_object"
 import p5 from 'p5'
 
-class Ally extends GameObject {
+class Enemy extends GameObject {
     // collider_objects: Array<Rect>
     constructor (pos: p5.Vector, size: p5.Vector) {
         super(pos, size)
@@ -24,10 +24,10 @@ class Ally extends GameObject {
             this.up()
         } else if( method_name ===  "down") {
             this.down()
-        } else {
-
+        } else if ( method_name === "collided") {
+            this.change_color([100, 200, 0, 1])
         }
     }
 }
 
-export{Ally}
+export{Enemy}

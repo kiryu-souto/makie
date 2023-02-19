@@ -1,4 +1,5 @@
 import { Substance } from './substance'
+import { v4 as uuidv4 } from 'uuid'
 import p5 from 'p5'
 
 interface Actions {
@@ -6,20 +7,21 @@ interface Actions {
 }
 
 class Rect extends Substance {
-    id: number
+    id: string
+    parent_uuid: string
     max_y: number
     max_x: number
     min_y: number
     min_x: number
 
-    constructor( pos: p5.Vector, size: p5.Vector, ) {
+    constructor( pos: p5.Vector, size: p5.Vector, parent_uuid: string = '') {
         super(pos, size);
-        const random_max = 1000
-        this.id = Math.random() * random_max
+        this.id = uuidv4()
         this.max_y = Math.max(...[pos.y, pos.y + size.y])
         this.min_y = Math.min(...[pos.y, pos.y + size.y])
         this.max_x = Math.max(...[pos.x, pos.x + size.x])
         this.min_x = Math.min(...[pos.x, pos.x + size.x])
+        this.parent_uuid = parent_uuid
     }
 
     // action = ( method_name: string ) => {

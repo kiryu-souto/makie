@@ -4,6 +4,7 @@ import * as text from './1_atoms/objects/text'
 import * as line from './1_atoms/objects/line'
 import * as rect from './1_atoms/objects/rect'
 import {Ally} from './1_atoms/game_objects/ally'
+import {Enemy} from './1_atoms/game_objects/enemy'
 import * as colliders from './1_atoms/collision_detection/collider'
 import * as origin_draw from './2_molecules/draws/object_draw'
 import p5 from 'p5'
@@ -11,7 +12,8 @@ import p5 from 'p5'
 // object declaration
 // let test_text_lst = [new text.Text(new p5.Vector(10, 220), new p5.Vector(20, 230) , "hogehoge")]
 let own_rect_lst = [new Ally(new p5.Vector(50, 220), new p5.Vector(20, 30))]
-let test_rect_lst = [ new rect.Rect(new p5.Vector(300, 100), new p5.Vector(30, 300)), 
+let enemy_rect_lst = [new Enemy(new p5.Vector(100, 220), new p5.Vector(20, 30))]
+let object_rect_lst = [ new rect.Rect(new p5.Vector(300, 100), new p5.Vector(30, 300)), 
                       new rect.Rect(new p5.Vector(0, 350), new p5.Vector(300, 30)),
                       new rect.Rect(new p5.Vector(0, 100), new p5.Vector(30, 300)),
                       new rect.Rect(new p5.Vector(0, 70), new p5.Vector(300, 30))]
@@ -46,9 +48,6 @@ const sketch = (p: p5) => {
       }
     }
 
-    // console.log(new_text.constructor.prototype)
-    // console.log(new_text.max_y)
-
     if (input_key === "right") {
       new_text.action("right")
     } else if (input_key === "left") {
@@ -58,14 +57,19 @@ const sketch = (p: p5) => {
     } else if (input_key === "up") {
       new_text.action("up")
     } else {
-      // console.log(new_text.constructor.prototype)
       new_text.action("down")
     }
 
     // 当たり判定判別
-    for (let line of test_rect_lst) {
+    for (let line of object_rect_lst) {
       if ( colliders.new_square_collide_2(new_text, line) === "inside") {
         attach_status.push({"collided_object": text, "collide_object": line})
+      }
+    }
+
+    for (let item of enemy_rect_lst) {
+      if ( colliders.new_square_collide_2(new_text, item) === "inside") {
+        attach_status.push({"collided_object": text, "collide_object": item})
       }
     }
 
@@ -74,9 +78,24 @@ const sketch = (p: p5) => {
       own_rect_lst[0] = new_text
     }
 
-    p.fill(0)
+    // 当たった場合の処理
+    // if (attach_status.some(value => value["collided_object"].id === text.id)) {
+    //   // own_rect_lst[0] = new_text
+    // }
+
+    enemy_rect_lst.forEach((value, index) => {
+      for (let attach_item of attach_status) {
+        if (attach_item["collide_object"].id === value.id ) {
+          console.log(value.id)
+          value.action("collided")
+          enemy_rect_lst[index] = value
+        }
+      }
+    })
+
     origin_draw.origin_draw(p, own_rect_lst)
-    origin_draw.origin_draw(p, test_rect_lst)
+    origin_draw.origin_draw(p, enemy_rect_lst)
+    origin_draw.origin_draw(p, object_rect_lst)
   }
 }
 
@@ -105,7 +124,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 //         // const new_text_size = new p5.Vector(text.size.x + horizontal_movement(10, 1) , text.size.y )
 //         // const new_text_pos = new p5.Vector(text.pos.x + 1 , text.pos.y )
 //         new_text.set_x(1)
-//         for (let line of test_rect_lst) {
+//         for (let line of object_rect_lst) {
 //           // console.log("old_collide")
 //           // console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) )
 //           // console.log("test")
@@ -126,7 +145,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 //       } else if (p.keyCode == p.LEFT_ARROW) {
 //         // const new_text_size = new p5.Vector(text.size.x - horizontal_movement(10, 1) , text.size.y )
 //         const new_text_pos = new p5.Vector(text.pos.x - 1 , text.pos.y )
-//         for (let line of test_rect_lst) {
+//         for (let line of object_rect_lst) {
 //           console.log("left")
 //           console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) )
 //           if ( colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) === "inside") {
@@ -138,7 +157,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 //       } else if(p.keyCode == p.DOWN_ARROW) {
 //           // const new_text_size = new p5.Vector(text.size.x + 1  , text.size.y )
 //           const new_text_pos = new p5.Vector(text.pos.x + 1 , text.pos.y )
-//           for (let line of test_rect_lst) {
+//           for (let line of object_rect_lst) {
 //             console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) === "inside" )
 //             console.log("down")
 //             console.log("text_pos", new_text_pos)
@@ -153,7 +172,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 //       } else if (p.keyCode == p.UP_ARROW) {
 //         // const new_text_size = new p5.Vector(text.size.x + 1  , text.size.y )
 //         const new_text_pos = new p5.Vector(text.pos.x - 1 , text.pos.y )
-//         for (let line of test_rect_lst) {
+//         for (let line of object_rect_lst) {
 //           console.log(colliders.new_square_collide(new_text_pos, text.size, line.pos, line.size) === "inside" )
 //           console.log("down")
 //           console.log("text_pos", new_text_pos)
@@ -171,6 +190,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 
 //     p.fill(0)
 //     origin_draw.origin_draw(p, own_rect_lst)
-//     origin_draw.origin_draw(p, test_rect_lst)
+//     origin_draw.origin_draw(p, object_rect_lst)
 //   }
 // }
