@@ -2,21 +2,49 @@ import './style.css'
 import {horizontal_movement, vertical_motion} from './1_atoms/math/game'
 import * as text from './1_atoms/objects/text'
 import * as line from './1_atoms/objects/line'
-import * as rect from './1_atoms/objects/rect'
+import {Rect} from './1_atoms/objects/rect'
 import {Ally} from './1_atoms/game_objects/ally'
 import {Enemy} from './1_atoms/game_objects/enemy'
 import * as colliders from './1_atoms/collision_detection/collider'
 import * as origin_draw from './2_molecules/draws/object_draw'
 import p5 from 'p5'
+import { index } from 'mathjs'
 
 // object declaration
 // let test_text_lst = [new text.Text(new p5.Vector(10, 220), new p5.Vector(20, 230) , "hogehoge")]
 let own_rect_lst = [new Ally(new p5.Vector(50, 220), new p5.Vector(20, 30))]
 let enemy_rect_lst = [new Enemy(new p5.Vector(100, 220), new p5.Vector(20, 30))]
-let object_rect_lst = [ new rect.Rect(new p5.Vector(300, 100), new p5.Vector(30, 300)), 
-                      new rect.Rect(new p5.Vector(0, 350), new p5.Vector(300, 30)),
-                      new rect.Rect(new p5.Vector(0, 100), new p5.Vector(30, 300)),
-                      new rect.Rect(new p5.Vector(0, 70), new p5.Vector(300, 30))]
+let object_rect_lst = [ new Rect(new p5.Vector(300, 100), new p5.Vector(30, 300)), 
+                      new Rect(new p5.Vector(0, 350), new p5.Vector(300, 30)),
+                      new Rect(new p5.Vector(0, 100), new p5.Vector(30, 300)),
+                      new Rect(new p5.Vector(0, 70), new p5.Vector(300, 30))]
+
+// snake_case変換関数
+function change_snake_change(str: string): string {
+  const camelcase = str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+  return camelcase.split(/(?=[A-Z])/).join('_').toLowerCase()
+}
+
+// proxyオブジェクトの生成
+function proxy_builder(...params: Rect[][]): Map<any, Rect[]> {
+  let ans = new Map();
+  for (let item_lst of params) {
+    item_lst.forEach((value, index) => {
+      const key_name = change_snake_change(value.constructor.name)
+      console.log(key_name)
+      if (index === 0) {
+        ans.set(key_name, [new Proxy(value, {})])
+      } else {
+        const before_lst = ans.get(key_name)
+        before_lst.push(new Proxy(value, {}))
+        ans.set(key_name, before_lst)
+      }
+    })
+  }
+  return ans;
+}
+
+let proxy_lst = proxy_builder(own_rect_lst, enemy_rect_lst, object_rect_lst)
 
 
 const sketch = (p: p5) => {
@@ -28,7 +56,7 @@ const sketch = (p: p5) => {
     p.background(255);
     let text = own_rect_lst[0]
     let new_text = new Ally(text.pos, text.size)
-    let attach_status: Array<{[key: string]:rect.Rect;}> = []
+    let attach_status: Array<{[key: string]:Rect;}> = []
     let input_key = ""
 
     // キープレスをしたときに発火する
@@ -75,6 +103,7 @@ const sketch = (p: p5) => {
 
     // 当たり判定がない場合の処理
     if (!attach_status.some(value => value["collided_object"].id === text.id)) {
+      // setterが発火する
       own_rect_lst[0] = new_text
     }
 
@@ -86,7 +115,6 @@ const sketch = (p: p5) => {
     enemy_rect_lst.forEach((value, index) => {
       for (let attach_item of attach_status) {
         if (attach_item["collide_object"].id === value.id ) {
-          console.log(value.id)
           value.action("collided")
           enemy_rect_lst[index] = value
         }
