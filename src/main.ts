@@ -27,7 +27,7 @@ function change_snake_change(str: string): string {
 }
 
 // proxyオブジェクトの生成
-function proxy_builder(...params: Rect[][]): Map<any, Rect[]> {
+function proxy_builder(...params: GameObject[][]): Map<any, GameObject[]> {
   let ans = new Map();
   for (let item_lst of params) {
     item_lst.forEach((value, index) => {
@@ -55,8 +55,8 @@ const sketch = (p: p5) => {
 
   p.draw = () => {
     p.background(255);
-    let text = own_rect_lst[0]
-    let new_text = new Ally(text.pos, text.size)
+    let text = proxy_lst.get("ally") ?? []
+    let new_text = new Ally(text[0].pos, text[0].size)
     let attach_status: Array<{[key: string]:Rect;}> = []
     let input_key = ""
 
@@ -92,20 +92,24 @@ const sketch = (p: p5) => {
     // 当たり判定判別
     for (let line of object_rect_lst) {
       if ( colliders.new_square_collide_2(new_text, line) === "inside") {
-        attach_status.push({"collided_object": text, "collide_object": line})
+        attach_status.push({"collided_object": text[0], "collide_object": line})
       }
     }
 
     for (let item of enemy_rect_lst) {
       if ( colliders.new_square_collide_2(new_text, item) === "inside") {
-        attach_status.push({"collided_object": text, "collide_object": item})
+        attach_status.push({"collided_object": text[0], "collide_object": item})
       }
     }
 
     // 当たり判定がない場合の処理
-    if (!attach_status.some(value => value["collided_object"].id === text.id)) {
+    if (!attach_status.some(value => value["collided_object"].id === text[0].id)) {
       // setterが発火する
-      own_rect_lst[0] = new_text
+      if (input_key !== "") {
+        text[0].action(input_key)
+      } else {
+        text[0].action("down")
+      }
     }
 
 
