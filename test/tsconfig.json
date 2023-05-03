@@ -1,0 +1,23 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "emitDeclarationOnly": false,
+        "strict": true,
+        "noEmit": true,
+        "target": "esnext",
+        "jsx": "react",
+        "baseUrl": ".",
+        "skipLibCheck": true,
+        "noImplicitReturns": false,
+        "noUnusedLocals": false,
+        "paths": {
+          "gedux": ["../src/index.ts"], // @remap-prod-remove-line
+          "@internal/*": ["../src/*"]
+        }
+      },
+    "include": ["**/*.spec.ts"]
+}

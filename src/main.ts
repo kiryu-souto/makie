@@ -9,7 +9,6 @@ import {Enemy} from './1_atoms/game_objects/enemy'
 import * as colliders from './1_atoms/collision_detection/collider'
 import * as origin_draw from './2_molecules/draws/object_draw'
 import p5 from 'p5'
-import { index } from 'mathjs'
 
 // object declaration
 // let test_text_lst = [new text.Text(new p5.Vector(10, 220), new p5.Vector(20, 230) , "hogehoge")]
@@ -32,7 +31,6 @@ function proxy_builder(...params: GameObject[][]): Map<any, GameObject[]> {
   for (let item_lst of params) {
     item_lst.forEach((value, index) => {
       const key_name = change_snake_change(value.constructor.name)
-      console.log(key_name)
       if (index === 0) {
         ans.set(key_name, [new Proxy(value, {})])
       } else {
