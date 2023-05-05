@@ -27,7 +27,6 @@ test('分割', function() {
 // grabity: 万有引力定数
 test('放物線', function() {
     const test_value = parabola(10, 1, 45, new Decimal(6.708))
-    console.log(test_value)
     expect(test_value.truncated()).toEqual(new Decimal(0))
 })
 

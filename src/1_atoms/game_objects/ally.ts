@@ -46,9 +46,6 @@ class Ally extends GameObject {
         } else if(this.animation_state == "jumping") {
             if (method_name === "right") {
                 this.jump_right()
-                console.log("jump_right")
-                console.log("min_x", this.min_x)
-                console.log("min_y", this.min_y)
             } else if(method_name ===  "left") {
                 this.jump_left()
             } else if( method_name ===  "down") {

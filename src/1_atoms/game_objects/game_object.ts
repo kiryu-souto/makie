@@ -83,7 +83,6 @@ class GameObject extends Rect implements Actions {
     in_jump = () => {
         const parabola_value = parabola(13, this.start_codinate.x, 45).mul(-1)
         this.start_codinate.set_x(this.start_codinate.x + 1)
-        console.log("parabora_value", parabola_value.truncated().toNumber())
         this.set_y(parabola_value.truncated().toNumber())
     }
 
