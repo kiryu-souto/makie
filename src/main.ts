@@ -43,6 +43,14 @@ function proxy_builder(...params: GameObject[][]): Map<any, GameObject[]> {
   return ans;
 }
 
+// アニメーション関数
+// オブジェクトのfunction_stateの状態に応じた振る舞いを強要する
+// この関数はatomsフォルダに格納する
+function animation_func(game_object: GameObject) {
+  const game_object_state = game_object.animation_state
+  
+}
+
 let proxy_lst = proxy_builder(own_rect_lst, enemy_rect_lst, object_rect_lst)
 
 
@@ -75,6 +83,7 @@ const sketch = (p: p5) => {
       }
     }
 
+    // 未来の自分の状態を生成
     if (input_key === "right") {
       new_text.action("right")
     } else if (input_key === "left") {
@@ -87,13 +96,14 @@ const sketch = (p: p5) => {
       new_text.action("down")
     }
 
-    // 当たり判定判別
+    // 自機当たり判定判別
     for (let line of object_rect_lst) {
       if ( colliders.new_square_collide_2(new_text, line) === "inside") {
         attach_status.push({"collided_object": text[0], "collide_object": line})
       }
     }
 
+    // 敵機の当たり判定
     for (let item of enemy_rect_lst) {
       if ( colliders.new_square_collide_2(new_text, item) === "inside") {
         attach_status.push({"collided_object": text[0], "collide_object": item})
@@ -101,7 +111,15 @@ const sketch = (p: p5) => {
     }
 
     // 当たり判定がない場合の処理
-    if (!attach_status.some(value => value["collided_object"].id === text[0].id)) {
+    if (attach_status.some(value => value["collided_object"].id === text[0].id)) {
+      text[0].action("collided")
+      text[0].start_codinate.reset()
+      const test = attach_status.find(value => value["collided_object"].id === text[0].id) ?? {}
+      
+      if (text[0].y_length() + test.collide_object.y_length() - (test.collide_object.max_y - text[0].min_y) > 0) {
+        text[0].set_y(-((text[0].y_length() + test.collide_object.y_length() - (test.collide_object.max_y - text[0].min_y)) + 1))
+      }
+    } else {
       // setterが発火する
       if (input_key !== "") {
         text[0].action(input_key)
@@ -110,7 +128,7 @@ const sketch = (p: p5) => {
       }
     }
 
-
+    // 敵機の当たり判定の反映
     enemy_rect_lst.forEach((value, index) => {
       for (let attach_item of attach_status) {
         if (attach_item["collide_object"].id === value.id ) {

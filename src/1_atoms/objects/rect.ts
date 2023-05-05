@@ -52,6 +52,14 @@ class Rect extends Substance {
         this.set_x(x)
         this.set_y(y)
     }
+
+    y_length() {
+        return this.max_y - this.min_y
+    }
+
+    x_length() {
+        return this.max_x - this.min_x
+    }
 }
 
 

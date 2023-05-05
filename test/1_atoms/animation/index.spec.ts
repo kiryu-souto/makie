@@ -20,8 +20,14 @@ test('分割', function() {
     expect(test_value).toEqual(new Decimal(11))
 })
 
+// 式:      tan(cita)x - g x^2 / 2(v0 * cos (cita)) ^ 2
+// v0:      初速
+// x:       xの初期座標
+// cita:    角度
+// grabity: 万有引力定数
 test('放物線', function() {
-    const test_value = parabola(10, 13, 45, new Decimal(6.708))
+    const test_value = parabola(10, 1, 45, new Decimal(6.708))
+    console.log(test_value)
     expect(test_value.truncated()).toEqual(new Decimal(0))
 })
 

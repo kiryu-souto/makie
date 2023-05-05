@@ -32,7 +32,7 @@ function sekibun(kansu: (x: number) => number, kugiri: number): Decimal {
 // x:       xの初期座標
 // cita:    角度
 // grabity: 万有引力定数
-function parabola(v0: number,x: number, cita: number, grabity: Decimal): Decimal {
+function parabola(v0: number,x: number, cita: number, grabity: Decimal= new Decimal(6.708)): Decimal {
     return Decimal.tan(cita).mul(x)
                   .sub(
                         grabity.mul(x**2)
