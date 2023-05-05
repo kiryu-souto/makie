@@ -46,10 +46,10 @@ function proxy_builder(...params: GameObject[][]): Map<any, GameObject[]> {
 // アニメーション関数
 // オブジェクトのfunction_stateの状態に応じた振る舞いを強要する
 // この関数はatomsフォルダに格納する
-function animation_func(game_object: GameObject) {
-  const game_object_state = game_object.animation_state
+// function animation_func(game_object: GameObject) {
+//   const game_object_state = game_object.animation_state
   
-}
+// }
 
 let proxy_lst = proxy_builder(own_rect_lst, enemy_rect_lst, object_rect_lst)
 

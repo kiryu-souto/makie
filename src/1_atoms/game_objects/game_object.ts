@@ -64,17 +64,16 @@ class GameObject extends Rect implements Actions {
 
     // ジャンプ中の右方向の動き
     jump_right = () => {
-        const parabola_value = parabola(1, this.start_codinate.x, 45).mul(-1)
-        console.log("jump_right", this.min_x)
-        this.set_x(1)
+        const parabola_value = parabola(13, this.start_codinate.x, 45).mul(-1)
         this.start_codinate.set_x(this.start_codinate.x + 1)
+        this.set_x(1)
         this.set_y(parabola_value.truncated().toNumber())
     }
 
 
     // ジャンプ中の左方向の動き
     jump_left = () => {
-        const parabola_value = parabola(1, this.start_codinate.x, 45).mul(-1)
+        const parabola_value = parabola(13, this.start_codinate.x, 45).mul(-1)
         this.start_codinate.set_x(this.start_codinate.x + 1)
         this.set_x(-1)
         this.set_y(parabola_value.truncated().toNumber())
@@ -84,6 +83,7 @@ class GameObject extends Rect implements Actions {
     in_jump = () => {
         const parabola_value = parabola(13, this.start_codinate.x, 45).mul(-1)
         this.start_codinate.set_x(this.start_codinate.x + 1)
+        console.log("parabora_value", parabola_value.truncated().toNumber())
         this.set_y(parabola_value.truncated().toNumber())
     }
 
