@@ -30,7 +30,7 @@ class GameObject extends Rect implements Actions {
     color: Array<number>
     animation_state: string
     start_codinate: JumpStruct
-    constructor (pos: p5.Vector, size: p5.Vector, color: Array<number> = [100, 0, 0, 0], animation_state: string = "landing") {
+    constructor (pos: p5.Vector, size: p5.Vector, animation_state: string = "landing", color: Array<number> = [100, 0, 0, 0]) {
         super(pos, size)
         this.color = color
         this.animation_state = animation_state

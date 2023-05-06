@@ -3,7 +3,7 @@ import p5 from 'p5'
 
 class Ally extends GameObject {
     // collider_objects: Array<Rect>
-    constructor (pos: p5.Vector, size: p5.Vector) {
+    constructor(pos: p5.Vector, size: p5.Vector) {
         super(pos, size)
         // this.action = (method_name: string) => {
         //     if (method_name === "right") {
@@ -15,7 +15,7 @@ class Ally extends GameObject {
         //     } else if( method_name ===  "down") {
         //         this.down()
         //     } else {
-    
+
         //     }
         // }
 
@@ -29,30 +29,30 @@ class Ally extends GameObject {
     }
 
     action = (method_name: string) => {
-        if (method_name ==="collided") {
+        if (method_name === "collided") {
             this.collided()
         }
-        
-        if(this.animation_state == "landing") {
+
+        if (this.animation_state == "landing") {
             if (method_name === "right") {
                 this.right()
-            } else if( method_name ===  "left") {
+            } else if (method_name === "left") {
                 this.left()
-            } else if( method_name ===  "up") {
+            } else if (method_name === "up") {
                 this.up()
-            } else if( method_name ===  "down") {
+            } else if (method_name === "down") {
                 this.down()
             }
-        } else if(this.animation_state == "jumping") {
+        } else if (this.animation_state == "jumping") {
             if (method_name === "right") {
                 this.jump_right()
-            } else if(method_name ===  "left") {
+            } else if (method_name === "left") {
                 this.jump_left()
-            } else if( method_name ===  "down") {
+            } else if (method_name === "down") {
                 this.in_jump()
             }
         }
     }
 }
 
-export{Ally}
+export { Ally }
