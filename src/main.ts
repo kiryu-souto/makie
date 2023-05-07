@@ -74,6 +74,8 @@ const sketch = (p: p5) => {
       }
     }
 
+    // キー入力: start
+
     // キープレスをしたときに発火する
     if (p.keyIsPressed) {
       p.fill(0)
@@ -91,6 +93,9 @@ const sketch = (p: p5) => {
       }
     }
 
+    // キー入力: end
+
+    // 入力後のゲームのステートを生成: start
     // 未来の自分の状態を生成
     if (input_key === "right") {
       new_text.action("right")
@@ -103,6 +108,9 @@ const sketch = (p: p5) => {
     } else {
       new_text.action("down")
     }
+    // 入力後のゲームのステートを生成: end
+
+    // 当たり判定部分: start
 
     for (let item of new_enemys) {
       item.action("right")
@@ -121,16 +129,17 @@ const sketch = (p: p5) => {
         attach_status.push({ "collided_object": text[0], "collide_object": item })
       }
     }
+    // 当たり判定部分: end
 
-    // 当たり判定がある場合の処理
+    // ゲームオブジェクトのステート決定: start
+    // 当たり判定がない場合の処理
     if (attach_status.some(value => value["collided_object"].id === text[0].id)) {
       text[0].action("collided")
       text[0].start_codinate.reset()
-      const attach_object = attach_status.find(value => value["collided_object"].id === text[0].id) ?? {}
+      const test = attach_status.find(value => value["collided_object"].id === text[0].id) ?? {}
 
-      // 埋まったところをもとに戻す
-      if (text[0].y_length() + attach_object.collide_object.y_length() - (attach_object.collide_object.max_y - text[0].min_y) > 0) {
-        text[0].set_y(-((text[0].y_length() + attach_object.collide_object.y_length() - (attach_object.collide_object.max_y - text[0].min_y)) + 1))
+      if (text[0].y_length() + test.collide_object.y_length() - (test.collide_object.max_y - text[0].min_y) > 0) {
+        text[0].set_y(-((text[0].y_length() + test.collide_object.y_length() - (test.collide_object.max_y - text[0].min_y)) + 1))
       }
     } else {
       // setterが発火する
@@ -145,7 +154,7 @@ const sketch = (p: p5) => {
     }
 
     // 敵機の当たり判定の反映
-    enemys.forEach((value) => {
+    enemys.forEach((value, index) => {
       for (let attach_item of attach_status) {
         if (attach_item["collide_object"].id === value.id) {
           // 敵機を消す処理
@@ -154,13 +163,17 @@ const sketch = (p: p5) => {
           proxy_lst.set("enemy", proxy_lst.get("enemy")?.filter((item) => {item.id !== value.id}) ?? [])
         } else {
           value.action("down")
+          enemy_rect_lst[index] = value
         }
       }
     })
+    // ゲームオブジェクトのステート決定: end
 
+    // 描画: start
     origin_draw.origin_draw(p, own_rect_lst)
     origin_draw.origin_draw(p, enemys)
     origin_draw.origin_draw(p, object_rect_lst)
+    // 描画: end
   }
 }
 
