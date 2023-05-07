@@ -13,7 +13,7 @@ import p5 from 'p5'
 // object declaration
 // let attach_object_text_lst = [new text.Text(new p5.Vector(10, 220), new p5.Vector(20, 230) , "hogehoge")]
 let own_rect_lst = [new Ally(new p5.Vector(50, 220), new p5.Vector(20, 30))]
-let enemy_rect_lst = [new Enemy(new p5.Vector(100, 220), new p5.Vector(20, 30), "jumping")]
+let enemy_rect_lst = [new Enemy(new p5.Vector(100, 230), new p5.Vector(20, 30), "jumping")]
 let object_rect_lst = [new GameObject(new p5.Vector(300, 100), new p5.Vector(30, 300), "landing", [200, 200, 200, 200]),
 new GameObject(new p5.Vector(0, 350), new p5.Vector(300, 30), "landing", [200, 200, 200, 200]),
 new GameObject(new p5.Vector(0, 100), new p5.Vector(30, 300), "landing", [200, 200, 200, 200]),
@@ -123,16 +123,25 @@ const sketch = (p: p5) => {
       }
     }
 
-    // 敵機の当たり判定
+    // 自機と敵機の当たり判定
     for (let item of enemy_rect_lst) {
       if (colliders.new_square_collide_2(new_text, item) === "inside") {
         attach_status.push({ "collided_object": text[0], "collide_object": item })
       }
     }
+
+    // 敵機とオブジェクトの当たり判定
+    for (let line of object_rect_lst) {
+      new_enemys.forEach((enemy_item, index) => {
+        if (colliders.new_square_collide_2(enemy_item, line) === "inside") {
+          attach_status.push({ "collided_object": enemys[index], "collide_object": line })
+        }
+      })
+    }
     // 当たり判定部分: end
 
     // ゲームオブジェクトのステート決定: start
-    // 当たり判定がない場合の処理
+    // 自機の当たり判定がある場合の処理
     if (attach_status.some(value => value["collided_object"].id === text[0].id)) {
       text[0].action("collided")
       text[0].start_codinate.reset()
@@ -148,23 +157,34 @@ const sketch = (p: p5) => {
       } else {
         text[0].action("down")
       }
-      for (let enemy_item of enemys) {
-        enemy_item.action("right")
-      }
     }
 
     // 敵機の当たり判定の反映
-    enemys.forEach((value, index) => {
-      for (let attach_item of attach_status) {
-        if (attach_item["collide_object"].id === value.id) {
-          // 敵機を消す処理
-          enemys = enemys.filter((item) => {item.id !== value.id})
-          enemy_rect_lst = enemy_rect_lst.filter((item) => {item.id !== value.id})
-          proxy_lst.set("enemy", proxy_lst.get("enemy")?.filter((item) => {item.id !== value.id}) ?? [])
-        } else {
-          value.action("down")
-          enemy_rect_lst[index] = value
+    enemy_rect_lst.forEach((enemy_item, index) => {
+      if (attach_status.some(value => value["collide_object"].id === enemy_item.id)) {
+        for (let attach_item of attach_status) {
+          if (attach_item["collide_object"].id === enemy_item.id) {
+            if (attach_item["collided_object"] instanceof Ally) {
+              // 敵機を消す処理
+              enemys = enemys.filter((item) => { item.id !== enemy_item.id })
+              enemy_rect_lst = enemy_rect_lst.filter((item) => { item.id !== enemy_item.id })
+              proxy_lst.set("enemy", proxy_lst.get("enemy")?.filter((item) => { item.id !== enemy_item.id }) ?? [])
+            }
+          }
         }
+      } else if (attach_status.some(value => value["collided_object"].id === enemy_item.id)) {
+        const test = attach_status.find(value => value["collided_object"].id === enemy_item.id) ?? {}
+        enemy_item.action("collided")
+        enemy_item.start_codinate.reset()
+        if (enemy_item.y_length() + test.collide_object.y_length() - (test.collide_object.max_y - enemy_item.min_y) > 0) {
+          enemy_item.set_y(-((enemy_item.y_length() + test.collide_object.y_length() - (test.collide_object.max_y - enemy_item.min_y)) + 10))
+        }
+      } else {
+        // for (let attach_item of attach_status) {
+        //   console.log(attach_item["collided_object"].id)
+        //   console.log(enemy_item.id)
+        // }
+        enemy_item.action("right")
       }
     })
     // ゲームオブジェクトのステート決定: end
