@@ -36,6 +36,7 @@ test('放物線', function() {
 //     expect(test_value).toBe(10);
 // })
 
+// 式: f"k" = u"k" * N
 describe("動摩擦係数計算", () => {
     test("通常ケース", function() {
         const test_value = coefficient_of_kinetic_frinction(10, 0.1, 10)
