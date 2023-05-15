@@ -33,12 +33,26 @@ function sekibun(kansu: (x: number) => number, kugiri: number): Decimal {
 // cita:    角度
 // grabity: 万有引力定数
 function parabola(v0: number,x: number, cita: number, grabity: Decimal= new Decimal(6.708)): Decimal {
+
     return Decimal.tan(cita).mul(x)
                   .sub(
                         grabity.mul(x**2)
                         .div(
                             Decimal.cos(cita).mul(v0).pow(2).mul(2)
                         ))
+
 }
 
-export {easeInSine, sekibun, bunkatu, parabola}
+// ###
+
+// 動摩擦係数
+// 式: f"k" = u"k" * N
+function coefficient_of_kinetic_frinction (now_x: number, masatu: number, nurton: number): number {
+    return now_x - (masatu * nurton)
+}
+
+
+// ###
+
+
+export {easeInSine, sekibun, bunkatu, parabola, coefficient_of_kinetic_frinction}

@@ -6,9 +6,10 @@ import {Text} from "./1_atoms/objects/text"
 import {Substance} from "./1_atoms/objects/substance"
 import {square_collide, new_square_collide, new_square_collide_2, Collision, 
         Bottom, Top, None, Inside, Right, Left} from "./1_atoms/collision_detection/collider"
-import {easeInSine, sekibun, bunkatu, parabola} from "./1_atoms/animations/index"
+import {easeInSine, sekibun, bunkatu, parabola, coefficient_of_kinetic_frinction} from "./1_atoms/animations/index"
 
 export {Store, GameObject, Rect, Line, Text, Substance, 
         Bottom, Top, None, Inside, Right, Left, 
-        square_collide, new_square_collide, new_square_collide_2, easeInSine, sekibun, bunkatu, parabola}
+        square_collide, new_square_collide, new_square_collide_2, 
+        easeInSine, sekibun, bunkatu, parabola, coefficient_of_kinetic_frinction}
 export type {Collision}
