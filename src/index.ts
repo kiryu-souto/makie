@@ -1,5 +1,5 @@
 import {Store} from "./2_molecules/store/store"
-import {GameObject} from "./1_atoms/game_objects/game_object"
+import {GameObject, AnimationInterface} from "./1_atoms/game_objects/index"
 import {Rect} from "./1_atoms/objects/rect"
 import {Line} from "./1_atoms/objects/line"
 import {Text} from "./1_atoms/objects/text"
@@ -12,4 +12,4 @@ export {Store, GameObject, Rect, Line, Text, Substance,
         Bottom, Top, None, Inside, Right, Left, 
         square_collide, new_square_collide, new_square_collide_2, 
         easeInSine, sekibun, bunkatu, parabola, coefficient_of_kinetic_frinction}
-export type {Collision}
+export type {Collision, AnimationInterface}
