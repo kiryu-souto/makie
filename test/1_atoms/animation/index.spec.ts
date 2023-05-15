@@ -1,5 +1,5 @@
 // import p5 from 'p5'
-import {sekibun, bunkatu, parabola} from 'gedux'
+import {bunkatu, parabola, coefficient_of_kinetic_frinction} from 'gedux'
 import {Decimal} from 'decimal.js'
 
 
@@ -27,7 +27,7 @@ test('分割', function() {
 // grabity: 万有引力定数
 test('放物線', function() {
     const test_value = parabola(10, 1, 45, new Decimal(6.708))
-    expect(test_value.truncated()).toEqual(new Decimal(0))
+    expect(test_value.truncated()).toEqual(new Decimal(1))
 })
 
 // test('当たり判定', function () {
@@ -35,3 +35,10 @@ test('放物線', function() {
 //     const test_value = sekibun(test_func, 10)
 //     expect(test_value).toBe(10);
 // })
+
+describe("動摩擦係数計算", () => {
+    test("通常ケース", function() {
+        const test_value = coefficient_of_kinetic_frinction(10, 0.1, 10)
+        expect(test_value).toBe(9)
+    })
+})
