@@ -91,6 +91,7 @@ const sketch = (p: p5) => {
       } else if (p.keyCode == p.UP_ARROW) {
         input_key = "up"
       }
+
     }
 
     // キー入力: end
@@ -98,15 +99,25 @@ const sketch = (p: p5) => {
     // 入力後のゲームのステートを生成: start
     // 未来の自分の状態を生成
     if (input_key === "right") {
+
       new_text.action("right")
+
     } else if (input_key === "left") {
+
       new_text.action("left")
+
     } else if (input_key === "down") {
+
       new_text.action("down")
+
     } else if (input_key === "up") {
+
       new_text.action("up")
+
     } else {
+
       new_text.action("down")
+
     }
     // 入力後のゲームのステートを生成: end
 
@@ -143,6 +154,7 @@ const sketch = (p: p5) => {
     // ゲームオブジェクトのステート決定: start
     // 自機の当たり判定がある場合の処理
     if (attach_status.some(value => value["collided_object"].id === text[0].id)) {
+
       text[0].action("collided")
       text[0].start_codinate.reset()
       const test = attach_status.find(value => value["collided_object"].id === text[0].id) ?? {}
@@ -150,40 +162,51 @@ const sketch = (p: p5) => {
       if (text[0].y_length() + test.collide_object.y_length() - (test.collide_object.max_y - text[0].min_y) > 0) {
         text[0].set_y(-((text[0].y_length() + test.collide_object.y_length() - (test.collide_object.max_y - text[0].min_y)) + 1))
       }
+
     } else {
+
       // setterが発火する
+
       if (input_key !== "") {
         text[0].action(input_key)
       } else {
         text[0].action("down")
       }
+
     }
 
     // 敵機の当たり判定の反映
     enemy_rect_lst.forEach((enemy_item, index) => {
       if (attach_status.some(value => value["collide_object"].id === enemy_item.id)) {
+
         for (let attach_item of attach_status) {
+
           if (attach_item["collide_object"].id === enemy_item.id) {
+
             if (attach_item["collided_object"] instanceof Ally) {
+
               // 敵機を消す処理
               enemys = enemys.filter((item) => { item.id !== enemy_item.id })
               enemy_rect_lst = enemy_rect_lst.filter((item) => { item.id !== enemy_item.id })
               proxy_lst.set("enemy", proxy_lst.get("enemy")?.filter((item) => { item.id !== enemy_item.id }) ?? [])
+
             }
+
           }
+
         }
+
       } else if (attach_status.some(value => value["collided_object"].id === enemy_item.id)) {
+
         const test = attach_status.find(value => value["collided_object"].id === enemy_item.id) ?? {}
         enemy_item.action("collided")
         enemy_item.start_codinate.reset()
+
         if (enemy_item.y_length() + test.collide_object.y_length() - (test.collide_object.max_y - enemy_item.min_y) > 0) {
           enemy_item.set_y(-((enemy_item.y_length() + test.collide_object.y_length() - (test.collide_object.max_y - enemy_item.min_y)) + 10))
         }
+
       } else {
-        // for (let attach_item of attach_status) {
-        //   console.log(attach_item["collided_object"].id)
-        //   console.log(enemy_item.id)
-        // }
         enemy_item.action("right")
       }
     })

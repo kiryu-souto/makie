@@ -6,8 +6,8 @@ class Line extends Substance {
     max_x: number
     min_y: number
     min_x: number
-    
-    constructor( pos: p5.Vector, size: p5.Vector, ) {
+
+    constructor(pos: p5.Vector, size: p5.Vector,) {
         super(pos, size)
         this.max_y = Math.max(...[pos.y, pos.y + pos.y])
         this.min_y = Math.min(...[pos.y, pos.y + pos.y])
@@ -17,4 +17,4 @@ class Line extends Substance {
 }
 
 
-export{Line}
+export { Line }

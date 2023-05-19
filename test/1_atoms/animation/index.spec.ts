@@ -1,6 +1,6 @@
 // import p5 from 'p5'
-import {bunkatu, parabola, coefficient_of_kinetic_frinction} from 'gedux'
-import {Decimal} from 'decimal.js'
+import { bunkatu, parabola, coefficient_of_kinetic_frinction } from 'gedux'
+import { Decimal } from 'decimal.js'
 
 
 /**
@@ -15,7 +15,7 @@ import {Decimal} from 'decimal.js'
 //     expect(test_value.constructor).toBe(colliders.Inside);
 // });
 
-test('分割', function() {
+test('分割', function () {
     const test_value = bunkatu(new Decimal(0), new Decimal(10), 10)
     expect(test_value).toEqual(new Decimal(11))
 })
@@ -25,7 +25,7 @@ test('分割', function() {
 // x:       xの初期座標
 // cita:    角度
 // grabity: 万有引力定数
-test('放物線', function() {
+test('放物線', function () {
     const test_value = parabola(10, 1, 45, new Decimal(6.708))
     expect(test_value.truncated()).toEqual(new Decimal(1))
 })
@@ -38,7 +38,7 @@ test('放物線', function() {
 
 // 式: f"k" = u"k" * N
 describe("動摩擦係数計算", () => {
-    test("通常ケース", function() {
+    test("通常ケース", function () {
         const test_value = coefficient_of_kinetic_frinction(10, 0.1, 10)
         expect(test_value).toBe(9)
     })
