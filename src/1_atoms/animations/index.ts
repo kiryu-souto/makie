@@ -1,7 +1,7 @@
 // 微分係数を計算
 // 微分係数を計算後、
 import { Decimal } from 'decimal.js'
-import { AnimationStatus } from './status'
+import { AnimationStatus, JumpStruct } from './status'
 
 function easeInSine(x: number): number {
     return 1 - Math.cos((x * Math.PI) / 2);
@@ -53,5 +53,5 @@ function coefficient_of_kinetic_frinction(now_x: number, masatu: number, nurton:
 }
 
 
-export { easeInSine, sekibun, bunkatu, parabola, coefficient_of_kinetic_frinction }
+export { JumpStruct, easeInSine, sekibun, bunkatu, parabola, coefficient_of_kinetic_frinction }
 export type { AnimationStatus }

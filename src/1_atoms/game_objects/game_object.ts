@@ -1,29 +1,6 @@
 import { Rect, Actions } from "../objects/rect"
-import { parabola } from "../animations"
-import { AnimationInterface } from "gedux"
+import { parabola, JumpStruct } from "../animations"
 import p5 from 'p5'
-
-class JumpStruct implements AnimationInterface {
-    x: number
-    y: number
-    constructor(x: number = 1, y: number = 1) {
-        this.x = x
-        this.y = y
-    }
-
-    set_x = (x: number) => {
-        this.x = x
-    }
-
-    set_y = (y: number) => {
-        this.y = y
-    }
-
-    reset = () => {
-        this.x = 1
-        this.y = 1
-    }
-}
 
 // animation_state: オブジェクトのアニメーションの状態を指す。 デフォルトで許可された状態: "landing", "jump"
 class GameObject extends Rect implements Actions {
