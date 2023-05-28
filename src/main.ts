@@ -116,13 +116,15 @@ const sketch = (p: p5) => {
       new_text.action("down")
 
     }
-    // 入力後のゲームのステートを生成: end
 
-    // 当たり判定部分: start
-
+    // 敵機の未来の状態を生成
     for (let item of new_enemys) {
       item.action("right")
     }
+
+    // 入力後のゲームのステートを生成: end
+
+    // 当たり判定部分: start
 
     // 自機当たり判定判別
     for (let line of object_rect_lst) {
