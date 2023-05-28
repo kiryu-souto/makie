@@ -144,10 +144,10 @@ const sketch = (p: p5) => {
 
       text[0].action("collided")
       text[0].start_codinate.reset()
-      const test = attach_status.find(value => value["collided_object"].id === text[0].id) ?? {}
+      const attach_status_item = attach_status.find(value => value["collided_object"].id === text[0].id) ?? {}
 
-      if (text[0].y_length() + test.collide_object.y_length() - (test.collide_object.max_y - text[0].min_y) > 0) {
-        text[0].set_y(-((text[0].y_length() + test.collide_object.y_length() - (test.collide_object.max_y - text[0].min_y)) + 1))
+      if (text[0].y_length() + attach_status_item.collide_object.y_length() - (attach_status_item.collide_object.max_y - text[0].min_y) > 0) {
+        text[0].set_y(-((text[0].y_length() + attach_status_item.collide_object.y_length() - (attach_status_item.collide_object.max_y - text[0].min_y)) + 1))
       }
 
     } else {
@@ -185,12 +185,12 @@ const sketch = (p: p5) => {
 
       } else if (attach_status.some(value => value["collided_object"].id === enemy_item.id)) {
 
-        const test = attach_status.find(value => value["collided_object"].id === enemy_item.id) ?? {}
+        const attach_status_item = attach_status.find(value => value["collided_object"].id === enemy_item.id) ?? {}
         enemy_item.action("collided")
         enemy_item.start_codinate.reset()
 
-        if (enemy_item.y_length() + test.collide_object.y_length() - (test.collide_object.max_y - enemy_item.min_y) > 0) {
-          enemy_item.set_y(-((enemy_item.y_length() + test.collide_object.y_length() - (test.collide_object.max_y - enemy_item.min_y)) + 10))
+        if (enemy_item.y_length() + attach_status_item.collide_object.y_length() - (attach_status_item.collide_object.max_y - enemy_item.min_y) > 0) {
+          enemy_item.set_y(-((enemy_item.y_length() + attach_status_item.collide_object.y_length() - (attach_status_item.collide_object.max_y - enemy_item.min_y)) + 10))
         }
 
       } else {
