@@ -95,21 +95,9 @@ const sketch = (p: p5) => {
 
     // 入力後のゲームのステートを生成: start
     // 未来の自分の状態を生成
-    if (input_key === "right") {
+    if (input_key != "") {
 
-      new_text.action("right")
-
-    } else if (input_key === "left") {
-
-      new_text.action("left")
-
-    } else if (input_key === "down") {
-
-      new_text.action("down")
-
-    } else if (input_key === "up") {
-
-      new_text.action("up")
+      new_text.action(input_key)
 
     } else {
 
