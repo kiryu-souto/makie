@@ -1,7 +1,4 @@
 import './style.css'
-import { horizontal_movement, vertical_motion } from './1_atoms/math/game'
-import * as text from './1_atoms/objects/text'
-import * as line from './1_atoms/objects/line'
 import { Rect } from './1_atoms/objects/rect'
 import { Ally } from './1_atoms/game_objects/ally'
 import { GameObject } from './1_atoms/game_objects/game_object'

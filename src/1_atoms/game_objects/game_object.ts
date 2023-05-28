@@ -1,8 +1,9 @@
 import { Rect, Actions } from "../objects/rect"
 import { parabola } from "../animations"
+import { AnimationInterface } from "gedux"
 import p5 from 'p5'
 
-class JumpStruct {
+class JumpStruct implements AnimationInterface {
     x: number
     y: number
     constructor(x: number = 1, y: number = 1) {
