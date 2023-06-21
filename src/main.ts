@@ -5,6 +5,7 @@ import { GameObject } from './1_atoms/game_objects/game_object'
 import { Enemy } from './1_atoms/game_objects/enemy'
 import * as colliders from './1_atoms/collision_detection/collider'
 import * as origin_draw from './2_molecules/draws/object_draw'
+import { collider_confirm, key_input, delete_game_object, collider_fix_y_position } from './2_molecules/collider_confirm/collider_confirm'
 import p5 from 'p5'
 
 // object declaration
@@ -15,6 +16,18 @@ let object_rect_lst = [new GameObject(new p5.Vector(300, 100), new p5.Vector(30,
 new GameObject(new p5.Vector(0, 350), new p5.Vector(300, 30), "landing", [200, 200, 200, 200]),
 new GameObject(new p5.Vector(0, 100), new p5.Vector(30, 300), "landing", [200, 200, 200, 200]),
 new GameObject(new p5.Vector(0, 70), new p5.Vector(300, 30), "landing", [200, 200, 200, 200])]
+
+const delete_propety_handler = {
+  deleteProperty(target: any, prop: any): any {
+    // enemy_rect_lst = enemy_rect_lst.filter((item) => { item.id !== enemy_item.id })
+    const enemy_find = enemy_rect_lst.findIndex((item) => { item.id !== prop })
+    if (enemy_find > -1){
+      delete target[enemy_find]
+    }
+  }
+}
+
+enemy_rect_lst = new Proxy(enemy_rect_lst, delete_propety_handler)
 
 // snake_case変換関数
 function change_snake_change(str: string): string {
@@ -107,7 +120,7 @@ const sketch = (p: p5) => {
 
     // 敵機の未来の状態を生成
     for (let item of new_enemys) {
-      item.action("right")
+      item.action("down")
     }
 
     // 入力後のゲームのステートを生成: end
@@ -144,21 +157,14 @@ const sketch = (p: p5) => {
 
       text[0].action("collided")
       text[0].start_codinate.reset()
-      const attach_status_item = attach_status.find(value => value["collided_object"].id === text[0].id) ?? {}
 
-      if (text[0].y_length() + attach_status_item.collide_object.y_length() - (attach_status_item.collide_object.max_y - text[0].min_y) > 0) {
-        text[0].set_y(-((text[0].y_length() + attach_status_item.collide_object.y_length() - (attach_status_item.collide_object.max_y - text[0].min_y)) + 1))
-      }
+      collider_confirm(attach_status, text[0])
 
     } else {
 
       // setterが発火する
 
-      if (input_key !== "") {
-        text[0].action(input_key)
-      } else {
-        text[0].action("down")
-      }
+      key_input(input_key, text[0])
 
     }
 
@@ -189,12 +195,10 @@ const sketch = (p: p5) => {
         enemy_item.action("collided")
         enemy_item.start_codinate.reset()
 
-        if (enemy_item.y_length() + attach_status_item.collide_object.y_length() - (attach_status_item.collide_object.max_y - enemy_item.min_y) > 0) {
-          enemy_item.set_y(-((enemy_item.y_length() + attach_status_item.collide_object.y_length() - (attach_status_item.collide_object.max_y - enemy_item.min_y)) + 10))
-        }
+        collider_fix_y_position(attach_status_item.collide_object, enemy_item)
 
       } else {
-        enemy_item.action("right")
+        key_input("down", enemy_item)
       }
     })
     // ゲームオブジェクトのステート決定: end

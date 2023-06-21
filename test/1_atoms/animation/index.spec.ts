@@ -1,5 +1,7 @@
 // import p5 from 'p5'
-import { bunkatu, parabola, coefficient_of_kinetic_frinction } from 'gedux'
+import { bunkatu, parabola, coefficient_of_kinetic_frinction,
+    JumpStruct, LandingStruct
+ } from 'gedux'
 import { Decimal } from 'decimal.js'
 
 
@@ -30,16 +32,29 @@ test('放物線', function () {
     expect(test_value.truncated()).toEqual(new Decimal(1))
 })
 
-// test('当たり判定', function () {
-//     const test_func = (i: number) => {return i}
-//     const test_value = sekibun(test_func, 10)
-//     expect(test_value).toBe(10);
-// })
 
 // 式: f"k" = u"k" * N
 describe("動摩擦係数計算", () => {
     test("通常ケース", function () {
         const test_value = coefficient_of_kinetic_frinction(10, 0.1, 10)
         expect(test_value).toBe(9)
+    })
+})
+
+describe("ゲームステータス変更", () => {
+    test("Jump to Landing", function () {
+        const jump_struct = new JumpStruct()
+        // const landing_struct = jump_struct.handler()
+        expect(JSON.stringify(jump_struct.handler())).toEqual(JSON.stringify(new LandingStruct()))
+    })
+
+    test("Landing to Jump", function () {
+        const landing_struct = new LandingStruct()
+        expect(JSON.stringify(landing_struct.handler())).toEqual(JSON.stringify(new JumpStruct()))
+    })
+
+    test("Jump to Jump", function () {
+        const landing_struct = new LandingStruct()
+        expect(JSON.stringify(landing_struct.handler("jump"))).toEqual(JSON.stringify(new JumpStruct()))
     })
 })

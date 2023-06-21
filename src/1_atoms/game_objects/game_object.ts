@@ -42,7 +42,7 @@ class GameObject extends Rect implements Actions {
 
     // ジャンプ中の右方向の動き
     jump_right = () => {
-        const parabola_value = this.start_codinate.set_dependent_function("right")
+        const parabola_value = this.start_codinate.confirm_dependent_function("right")
         this.set_x(1)
         this.set_y(parabola_value.truncated().toNumber())
     }
@@ -50,14 +50,14 @@ class GameObject extends Rect implements Actions {
 
     // ジャンプ中の左方向の動き
     jump_left = () => {
-        const parabola_value = this.start_codinate.set_dependent_function("left")
+        const parabola_value = this.start_codinate.confirm_dependent_function("left")
         this.set_x(-1)
         this.set_y(parabola_value.truncated().toNumber())
     }
 
     // ジャンプ中にキー入力がない場合の動き    
     in_jump = () => {
-        const parabola_value = this.start_codinate.set_dependent_function()
+        const parabola_value = this.start_codinate.confirm_dependent_function()
         this.set_y(parabola_value.truncated().toNumber())
     }
 
