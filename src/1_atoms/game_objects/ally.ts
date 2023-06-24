@@ -33,24 +33,15 @@ class Ally extends GameObject {
             this.collided()
         }
 
-        if (this.animation_state == "landing") {
-            if (method_name === "right") {
-                this.right()
-            } else if (method_name === "left") {
-                this.left()
-            } else if (method_name === "up") {
-                this.up()
-            } else if (method_name === "down") {
-                this.down()
-            }
-        } else if (this.animation_state == "jumping") {
-            if (method_name === "right") {
-                this.jump_right()
-            } else if (method_name === "left") {
-                this.jump_left()
-            } else if (method_name === "down") {
-                this.in_jump()
-            }
+        if (method_name === "right") {
+            
+            this.right()
+        } else if (method_name === "left") {
+            this.left()
+        } else if (method_name === "up") {
+            this.up()
+        } else if (method_name === "down") {
+            this.down()
         }
     }
 }

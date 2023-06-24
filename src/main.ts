@@ -11,11 +11,11 @@ import p5 from 'p5'
 // object declaration
 // let attach_object_text_lst = [new text.Text(new p5.Vector(10, 220), new p5.Vector(20, 230) , "hogehoge")]
 let own_rect_lst = [new Ally(new p5.Vector(50, 220), new p5.Vector(20, 30))]
-let enemy_rect_lst = [new Enemy(new p5.Vector(100, 230), new p5.Vector(20, 30), "jumping")]
-let object_rect_lst = [new GameObject(new p5.Vector(300, 100), new p5.Vector(30, 300), "landing", [200, 200, 200, 200]),
-new GameObject(new p5.Vector(0, 350), new p5.Vector(300, 30), "landing", [200, 200, 200, 200]),
-new GameObject(new p5.Vector(0, 100), new p5.Vector(30, 300), "landing", [200, 200, 200, 200]),
-new GameObject(new p5.Vector(0, 70), new p5.Vector(300, 30), "landing", [200, 200, 200, 200])]
+let enemy_rect_lst = [new Enemy(new p5.Vector(100, 230), new p5.Vector(20, 30))]
+let object_rect_lst = [new GameObject(new p5.Vector(300, 100), new p5.Vector(30, 300), [200, 200, 200, 200]),
+new GameObject(new p5.Vector(0, 350), new p5.Vector(300, 30), [200, 200, 200, 200]),
+new GameObject(new p5.Vector(0, 100), new p5.Vector(30, 300),  [200, 200, 200, 200]),
+new GameObject(new p5.Vector(0, 70), new p5.Vector(300, 30),  [200, 200, 200, 200])]
 
 const delete_propety_handler = {
   deleteProperty(target: any, prop: any): any {
@@ -80,7 +80,7 @@ const sketch = (p: p5) => {
 
     if (enemys.length > 0) {
       for (let item of enemys) {
-        new_enemys.push(new Enemy(item.pos, item.size, item.animation_state, item.color))
+        new_enemys.push(new Enemy(item.pos, item.size, item.color))
       }
     }
 
@@ -156,7 +156,7 @@ const sketch = (p: p5) => {
     if (attach_status.some(value => value["collided_object"].id === text[0].id)) {
 
       text[0].action("collided")
-      text[0].start_codinate.reset()
+      text[0].condition.reset()
 
       collider_confirm(attach_status, text[0])
 
@@ -193,7 +193,7 @@ const sketch = (p: p5) => {
 
         const attach_status_item = attach_status.find(value => value["collided_object"].id === enemy_item.id) ?? {}
         enemy_item.action("collided")
-        enemy_item.start_codinate.reset()
+        enemy_item.condition.reset()
 
         collider_fix_y_position(attach_status_item.collide_object, enemy_item)
 
