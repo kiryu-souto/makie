@@ -12,10 +12,16 @@ import p5 from 'p5'
 // let attach_object_text_lst = [new text.Text(new p5.Vector(10, 220), new p5.Vector(20, 230) , "hogehoge")]
 let own_rect_lst = [new Ally(new p5.Vector(50, 220), new p5.Vector(20, 30))]
 let enemy_rect_lst = [new Enemy(new p5.Vector(100, 230), new p5.Vector(20, 30))]
-let object_rect_lst = [new GameObject(new p5.Vector(300, 100), new p5.Vector(30, 300), [200, 200, 200, 200]),
-new GameObject(new p5.Vector(0, 350), new p5.Vector(300, 30), [200, 200, 200, 200]),
-new GameObject(new p5.Vector(0, 100), new p5.Vector(30, 300),  [200, 200, 200, 200]),
-new GameObject(new p5.Vector(0, 70), new p5.Vector(300, 30),  [200, 200, 200, 200])]
+let object_rect_lst = [
+  new GameObject(new p5.Vector(360, 100), new p5.Vector(30, 300), [200, 200, 200, 200]),
+  new GameObject(new p5.Vector(0, 370), new p5.Vector(400, 30), [200, 200, 200, 200]),
+  new GameObject(new p5.Vector(0, 100), new p5.Vector(30, 300),  [200, 200, 200, 200]),
+  new GameObject(new p5.Vector(0, 100), new p5.Vector(400, 30),  [200, 200, 200, 200]),
+  new GameObject(new p5.Vector(150, 250), new p5.Vector(30, 30),  [200, 200, 200, 200]),
+  new GameObject(new p5.Vector(180, 250), new p5.Vector(30, 30),  [200, 200, 200, 200]),
+  new GameObject(new p5.Vector(210, 250), new p5.Vector(30, 30),  [200, 200, 200, 200]),
+  new GameObject(new p5.Vector(180, 150), new p5.Vector(30, 30),  [200, 200, 200, 200])
+]
 
 const delete_propety_handler = {
   deleteProperty(target: any, prop: any): any {
