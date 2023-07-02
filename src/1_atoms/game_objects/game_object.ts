@@ -22,6 +22,14 @@ class GameObject extends Rect implements Actions {
         // this.collider_objects = lst
     }
 
+    get start() {
+        return {x: this.min_x, y: this.min_y}
+    }
+
+    get end() {
+        return {x: this.max_x, y: this.max_y}
+    }
+
     right = () => {
         const parabola_value = this.condition.confirm_dependent_function("right")
         this.set_x(parabola_value.x.truncated().toNumber())

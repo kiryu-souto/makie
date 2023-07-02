@@ -16,9 +16,7 @@ function collider_fix_y_position(attach_item: Rect, collide_object: PersonProxy)
 // ゲームの当たり判定の確定をする関数
 // 副作用として、当たったあとの処理の状態更新を行う
 function collider_confirm(attach_status: 
-    {
-        [key: string]: Rect;
-    }[],game_object: PersonProxy)
+    { collided_object: Rect, collide_object: Rect, collider_action: string }[],game_object: PersonProxy)
     {
     const attach_status_item = attach_status.find(value => value["collided_object"].id === game_object.id)
 

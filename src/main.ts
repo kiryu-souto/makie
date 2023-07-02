@@ -3,7 +3,7 @@ import { Rect } from './1_atoms/objects/rect'
 import { Ally } from './1_atoms/game_objects/ally'
 import { GameObject } from './1_atoms/game_objects/game_object'
 import { Enemy } from './1_atoms/game_objects/enemy'
-import * as colliders from './1_atoms/collision_detection/collider'
+import { new_square_collide, new_square_collide_2, new_square_collide_3 } from './1_atoms/collision_detection/collider'
 import * as origin_draw from './2_molecules/draws/object_draw'
 import { collider_confirm, key_input, delete_game_object, collider_fix_y_position } from './2_molecules/collider_confirm/collider_confirm'
 import p5 from 'p5'
@@ -80,7 +80,7 @@ const sketch = (p: p5) => {
     let text = proxy_lst.get("ally") ?? []
     let enemys = proxy_lst.get("enemy") ?? []
     let new_text = new Ally(text[0].pos, text[0].size)
-    let attach_status: Array<{ [key: string]: Rect; }> = []
+    let attach_status: Array<{ collided_object: Rect, collide_object: Rect, collider_action: string }> = []
     let input_key = ""
     let new_enemys: Array<Enemy> = []
 
@@ -135,23 +135,26 @@ const sketch = (p: p5) => {
 
     // 自機当たり判定判別
     for (let line of object_rect_lst) {
-      if (colliders.new_square_collide_2(new_text, line) === "inside") {
-        attach_status.push({ "collided_object": text[0], "collide_object": line })
+      const collide_data = new_square_collide_3(new_text, line)
+      if (collide_data !== "none") {
+        attach_status.push({ "collided_object": text[0], "collide_object": line, "collider_action": collide_data })
       }
     }
 
     // 自機と敵機の当たり判定
     for (let item of enemy_rect_lst) {
-      if (colliders.new_square_collide_2(new_text, item) === "inside") {
-        attach_status.push({ "collided_object": text[0], "collide_object": item })
+      const collide_data = new_square_collide_3(new_text, item)
+      if (collide_data !== "none") {
+        attach_status.push({ "collided_object": text[0], "collide_object": item, "collider_action": collide_data })
       }
     }
 
     // 敵機とオブジェクトの当たり判定
     for (let line of object_rect_lst) {
       new_enemys.forEach((enemy_item, index) => {
-        if (colliders.new_square_collide_2(enemy_item, line) === "inside") {
-          attach_status.push({ "collided_object": enemys[index], "collide_object": line })
+        const collide_data = new_square_collide_3(enemy_item, line)
+        if (collide_data !== "none") {
+          attach_status.push({ "collided_object": enemys[index], "collide_object": line, "collider_action": collide_data })
         }
       })
     }
@@ -159,7 +162,8 @@ const sketch = (p: p5) => {
 
     // ゲームオブジェクトのステート決定: start
     // 自機の当たり判定がある場合の処理
-    if (attach_status.some(value => value["collided_object"].id === text[0].id)) {
+    const ally_attach_item = attach_status.some(value => value["collided_object"].id === text[0].id)
+    if (ally_attach_item) {
 
       text[0].action("collided")
       text[0].condition.reset()
@@ -184,10 +188,12 @@ const sketch = (p: p5) => {
 
             if (attach_item["collided_object"] instanceof Ally) {
 
-              // 敵機を消す処理
-              enemys = enemys.filter((item) => { item.id !== enemy_item.id })
-              enemy_rect_lst = enemy_rect_lst.filter((item) => { item.id !== enemy_item.id })
-              proxy_lst.set("enemy", proxy_lst.get("enemy")?.filter((item) => { item.id !== enemy_item.id }) ?? [])
+              if (attach_item.collider_action == "top" || attach_item.collider_action == "bottom"  ) {
+                // 敵機を消す処理
+                enemys = enemys.filter((item) => { item.id !== enemy_item.id })
+                enemy_rect_lst = enemy_rect_lst.filter((item) => { item.id !== enemy_item.id })
+                proxy_lst.set("enemy", proxy_lst.get("enemy")?.filter((item) => { item.id !== enemy_item.id }) ?? [])
+              }
 
             }
 
@@ -197,11 +203,15 @@ const sketch = (p: p5) => {
 
       } else if (attach_status.some(value => value["collided_object"].id === enemy_item.id)) {
 
-        const attach_status_item = attach_status.find(value => value["collided_object"].id === enemy_item.id) ?? {}
+        const attach_status_item: { collided_object: Rect, collide_object: Rect, collider_action: string } | undefined = attach_status.find(value => value["collided_object"].id === enemy_item.id)
         enemy_item.action("collided")
         enemy_item.condition.reset()
 
-        collider_fix_y_position(attach_status_item.collide_object, enemy_item)
+        if (attach_status_item !== undefined){
+          if (attach_status_item.collider_action == "top" || attach_status_item.collider_action == "bottom" ) {
+            collider_fix_y_position(attach_status_item.collide_object, enemy_item)
+          }
+        }
 
       } else {
         key_input("down", enemy_item)

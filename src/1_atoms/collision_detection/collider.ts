@@ -1,5 +1,6 @@
 import p5 from 'p5'
 import { Rect } from './../objects/rect'
+import { GameObject } from '../game_objects'
 // import {matrix, subtract} from 'mathjs'
 
 export class Bottom {}
@@ -12,27 +13,27 @@ export class Inside {}
 type Collision = Bottom | Top | None | Right | Left | Inside
 
 
-function square_collide(a_pos: p5.Vector, a_size: p5.Vector, b_pos: p5.Vector, b_size: p5.Vector): Collision {
-    let new_a_pos = new p5.Vector(a_pos.x, a_pos.y)
-    let new_a_size = new p5.Vector(a_size.x, a_size.y)
-    let new_b_pos = new p5.Vector(b_pos.x, b_pos.y)
-    let new_b_size = new p5.Vector(b_size.x, b_size.y)
+// function square_collide(a_pos: p5.Vector, a_size: p5.Vector, b_pos: p5.Vector, b_size: p5.Vector): Collision {
+//     let new_a_pos = new p5.Vector(a_pos.x, a_pos.y)
+//     let new_a_size = new p5.Vector(a_size.x, a_size.y)
+//     let new_b_pos = new p5.Vector(b_pos.x, b_pos.y)
+//     let new_b_size = new p5.Vector(b_size.x, b_size.y)
 
-    let lst_b_point = [[new_b_pos.x, new_b_pos.y], 
-                       [new_b_pos.x, new_b_pos.y + new_b_size.y],
-                       [new_b_pos.x + new_b_size.y, new_b_pos],
-                       [new_b_pos.x + new_b_size.y, new_b_pos.y + new_b_size.y]]
-    for (let lst_item of lst_b_point) {
-        if ((new_a_pos.x <= lst_item[0]  &&
-              lst_item[0] <= new_a_pos.x + new_a_size.x && 
-              new_a_pos.y <= lst_item[1] && 
-              lst_item[1] <= new_a_pos.y + new_a_size.y)) {
-            return new Inside()
-        }
-    }
+//     let lst_b_point = [[new_b_pos.x, new_b_pos.y], 
+//                        [new_b_pos.x, new_b_pos.y + new_b_size.y],
+//                        [new_b_pos.x + new_b_size.y, new_b_pos],
+//                        [new_b_pos.x + new_b_size.y, new_b_pos.y + new_b_size.y]]
+//     for (let lst_item of lst_b_point) {
+//         if ((new_a_pos.x <= lst_item[0]  &&
+//               lst_item[0] <= new_a_pos.x + new_a_size.x && 
+//               new_a_pos.y <= lst_item[1] && 
+//               lst_item[1] <= new_a_pos.y + new_a_size.y)) {
+//             return new Inside()
+//         }
+//     }
 
-    return new None()
-}
+//     return new None()
+// }
 
 
 
@@ -91,88 +92,68 @@ function new_square_collide_2 (a_rect: Rect, b_rect: Rect) {
         }
 }
 
-export {square_collide, new_square_collide, new_square_collide_2}
+function new_square_collide_3(a_obj:GameObject, b_obj:GameObject): string {
+    if ((a_obj.min_x <= b_obj.max_x && a_obj.max_x >= b_obj.min_x) && (a_obj.min_y <= b_obj.max_y && a_obj.max_y >= b_obj.min_y)) {
+        let x_collision: string;
+        let y_collision: string;
+        let x_depth: number = 0;
+        let y_depth: number = 0;
+        
+        // if ((a_obj.min_x < b_obj.min_x && a_obj.max_x > b_obj.min_x) && a_obj.max_x < b_obj.max_x) {
+        //     x_collision = "left"
+        //     x_depth = Math.abs(b_obj.min_x - a_obj.max_x)
+        // } else if((a_obj.min_x > b_obj.min_x && a_obj.min_x < b_obj.max_x) && a_obj.max_x > b_obj.max_x) {
+        //     x_collision = "right"
+        //     x_depth = Math.abs(a_obj.min_x - b_obj.max_x)
+        // } else {
+        //     x_collision = "inside"
+        // }
+
+        // if ((a_obj.min_y < b_obj.min_y && a_obj.max_y > b_obj.min_y) && a_obj.max_y < b_obj.max_y) {
+        //     y_collision = "bottom"
+        //     y_depth = Math.abs(b_obj.min_y - a_obj.max_y)
+        // } else if ((a_obj.min_y > b_obj.min_y && a_obj.min_y < b_obj.max_y) && a_obj.max_y > b_obj.max_y) {
+        //     y_collision = "top"
+        //     y_depth = Math.abs(a_obj.min_y - b_obj.max_y)
+        // } else {
+        //     y_collision = "inside"
+        // }
+        if ((a_obj.min_x <= b_obj.min_x && a_obj.max_x >= b_obj.min_x) && a_obj.max_x <= b_obj.max_x) {
+            x_collision = "left"
+            x_depth = Math.abs(b_obj.min_x - a_obj.max_x)
+        } else if((a_obj.min_x >= b_obj.min_x && a_obj.min_x <= b_obj.max_x) && a_obj.max_x >= b_obj.max_x) {
+            x_collision = "right"
+            x_depth = Math.abs(a_obj.min_x - b_obj.max_x)
+        } else {
+            x_collision = "inside"
+        }
+
+        if ((a_obj.min_y <= b_obj.min_y && a_obj.max_y >= b_obj.min_y) && a_obj.max_y <= b_obj.max_y) {
+            y_collision = "bottom"
+            y_depth = Math.abs(b_obj.min_y - a_obj.max_y)
+        } else if ((a_obj.min_y >= b_obj.min_y && a_obj.min_y <= b_obj.max_y) && a_obj.max_y >= b_obj.max_y) {
+            y_collision = "top"
+            y_depth = Math.abs(a_obj.min_y - b_obj.max_y)
+        } else {
+            y_collision = "inside"
+        }
+
+        if ( y_depth < x_depth ) {
+            return x_collision
+        } else {
+            return y_collision
+        }
+
+    } else {
+        return "none"
+    }
+    
+}
+
+
+export {new_square_collide, new_square_collide_2, new_square_collide_3}
 export type {Collision}
 
-// 線と線の当たり判定用の関数
-// この関数は複数の四角形がある場合処理が間に合わない。おそらく計算効率が悪い。
-// function new_square_collide(a_start: p5.Vector, a_end: p5.Vector, b_start: p5.Vector, b_end: p5.Vector): Collision {
-
-//     // Xの最大値と最小値をaとbの四角形から算出
-//     const a_max_x = Math.max(...point_array_func(a_start, a_end).map((item) => {
-//         return item.x
-//     }))
-//     const a_min_x = Math.min(...point_array_func(a_start, a_end).map((item) => {
-//         return item.x
-//     }))
-//     const b_max_x = Math.max(...point_array_func(b_start, b_end).map((item) => {
-//         return item.x
-//     }))
-//     const b_min_x = Math.min(...point_array_func(b_start, b_end).map((item) => {
-//         return item.x
-//     }))
-
-//     // Yの最大値と最小値をaとbの四角形から算出
-//     const a_max_y = Math.max(...point_array_func(a_start, a_end).map((item) => {
-//         return item.y
-//     }))
-//     const a_min_y = Math.min(...point_array_func(a_start, a_end).map((item) => {
-//         return item.y
-//     }))
-//     const b_max_y = Math.max(...point_array_func(b_start, b_end).map((item) => {
-//         return item.y
-//     }))
-//     const b_min_y = Math.min(...point_array_func(b_start, b_end).map((item) => {
-//         return item.y
-//     }))
-
-
-
-//     if ((a_min_x < b_max_x && a_max_x > b_min_x) && (a_min_y < b_max_y && a_max_y > b_min_y)) {
-//         return new Inside()
-//         // // a_min.x < b_min.x && a_max.x > b_min.x && a_max.x < b_max.x
-//         // // b_min.x - a_max.x
-//         // // Collision::Left
-//         // if ((a_min_x < b_min_x && a_max_x > b_min_x) && a_max_x < b_max_x) {
-//         //     x_collision = new Left()
-//         //     x_depth = Math.abs(b_min_x - a_max_x)
-//         //     // a_min.x > b_min.x && a_min.x < b_max.x && a_max.x > b_max.x
-//         //     // Collision::Right
-//         //     // a_min.x - b_max.x
-//         // } else if((a_min_x > b_min_x && a_min_x < b_max_x) && a_max_x > b_max_x) {
-//         //     x_collision = new Right()
-//         //     x_depth = Math.abs(a_min_x - b_max_x)
-//         // } else {
-//         //     x_collision = new Inside()
-//         // }
-
-//         // // a_min.y < b_min.y && a_max.y > b_min.y && a_max.y < b_max.y
-//         // // Collision::Bottom
-//         // // b_min.y - a_max.y
-//         // if ((a_min_y < b_min_y && a_max_y > b_min_y) && a_max_y < b_max_y) {
-//         //     y_collision = new Bottom()
-//         //     y_depth = Math.abs(b_min_y - a_max_y)
-//         //     // a_min.y > b_min.y && a_min.y < b_max.y && a_max.y > b_max.y 
-//         //     // a_min.y - b_max.y
-//         // } else if ((a_min_y > b_min_y && a_min_y < b_max_y) && a_max_y > b_max_y) {
-//         //     y_collision = new Top()
-//         //     y_depth = Math.abs(a_min_y - b_max_y)
-//         // } else {
-//         //     x_collision = new Inside()
-//         // }
-//         // console.log("depth", x_depth, y_depth)
-        
-//         // if ( y_depth < x_depth ) {
-//         //     return x_collision
-//         // } else {
-//         //     return y_collision
-//         // }
-
-//     } else {
-//         return new None()
-//     }
-    
-// }
 
 
 // rubbish_code
