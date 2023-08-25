@@ -1,7 +1,7 @@
 # 前提条件
 
-node: v16.18.0
-OS: Linux
+node: v18.17.0
+OS: Ubuntu 22.04
 npm: 9.6.5
 
 # 起動方法
